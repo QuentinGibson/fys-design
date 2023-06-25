@@ -28,7 +28,7 @@ async function seed() {
   await prisma.service.create({
     data: {
       name: "Website Design & Development",
-      image: "/uploads/services/webdesign-example.png",
+      image: "/static/services/webdesign-example.png",
       perks: {
         create: [
           { name: "Custom Design" },
@@ -47,7 +47,7 @@ async function seed() {
   await prisma.service.create({
     data: {
       name: "Digital Marketing",
-      image: "/uploads/services/marketing-example.jpg",
+      image: "/static/services/marketing-example.jpg",
       perks: {
         create: [
           { name: "Email Marketing" },
@@ -66,7 +66,7 @@ async function seed() {
   await prisma.service.create({
     data: {
       name: "Systems and Apps",
-      image: "/uploads/services/system-example.jpg",
+      image: "/static/services/system-example.jpg",
       perks: {
         create: [
           { name: "Customer Reviews" },
@@ -170,7 +170,7 @@ async function seed() {
   await prisma.project.create({
     data: {
       name: "Greats of Craft",
-      image: "/uploads/projects/greats-of-craft.jpeg",
+      image: "/static/projects/greats-of-craft.jpeg",
       industries: {
         connect: [
           { id: foodAndBeverageIndustry.id },
@@ -194,7 +194,7 @@ async function seed() {
   await prisma.project.create({
     data: {
       name: "Mariani Premium Dried Fruit",
-      image: "/uploads/projects/mariani.png",
+      image: "/static/projects/mariani.png",
       industries: {
         connect: [
           { id: eCommerceIndustry.id },
@@ -216,7 +216,7 @@ async function seed() {
   await prisma.project.create({
     data: {
       name: "Grace Rose Farm",
-      image: "/uploads/projects/grace-rose-farm.jpeg",
+      image: "/static/projects/grace-rose-farm.jpeg",
       industries: {
         connect: [{ id: eCommerceIndustry.id }, { id: homeGoodsIndustry.id }],
       },
@@ -236,7 +236,7 @@ async function seed() {
   await prisma.project.create({
     data: {
       name: "Surely Non-Alchoholic Wine",
-      image: "/uploads/projects/surely.jpeg",
+      image: "/static/projects/surely.jpeg",
       industries: {
         connect: [
           { id: eCommerceIndustry.id },
@@ -259,7 +259,7 @@ async function seed() {
   await prisma.project.create({
     data: {
       name: "FRESHY World",
-      image: "/uploads/projects/fresh-world.jpeg",
+      image: "/static/projects/fresh-world.jpeg",
       industries: {
         connect: [{ id: eCommerceIndustry.id }, { id: fashionIndustry.id }],
       },
@@ -280,8 +280,8 @@ async function seed() {
   await prisma.case.create({
     data: {
       name: "Sweet E’s Bake Shop Reaches Record Conversion Rates Following Website Redesign from Pacific IQ",
-      image: "/uploads/cases/sweet-e.png",
-      logo: "/uploads/cases/logos/sweet-e-logo.png",
+      image: "/static/cases/sweet-e.png",
+      logo: "/static/cases/logos/sweet-e-logo.png",
       tag: { connect: [{ id: growthTag.id }] },
       content: "",
     },
@@ -290,8 +290,8 @@ async function seed() {
   await prisma.case.create({
     data: {
       name: "Furbish Studio partnered with Pacific IQ to improve its website conversion rate by 2.5x, resulting in 49% more sales.",
-      image: "/uploads/cases/furbish.png",
-      logo: "/uploads/cases/furbish-logo.png",
+      image: "/static/cases/furbish.png",
+      logo: "/static/cases/furbish-logo.png",
       tag: { connect: [{ id: growthTag.id }] },
       content: "",
     },
