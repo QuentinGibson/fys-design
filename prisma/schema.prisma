@@ -10,6 +10,7 @@ generator client {
 model User {
   id    String @id @default(cuid())
   email String @unique
+  role String @default("USER")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -22,4 +23,68 @@ model Password {
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String @unique
+}
+
+model Testimonial {
+  id    String @id @default(cuid())
+  name String @unique
+  content String
+}
+
+model Project {
+    id    String @id @default(cuid())
+    name String @unique
+    image String
+    link String?
+    summary String
+    content String
+
+    services Type[] 
+    industries Industry[]
+}
+
+model Industry {
+    id    String @id @default(cuid())
+    name String @unique
+    industry Project? @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    projectId String?
+}
+
+model Type {
+    id    String @id @default(cuid())
+    name String @unique
+    project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    projectId String?
+}
+
+model Case {
+    id    String @id @default(cuid())
+    logo String 
+    image String
+    name String @unique
+    content String
+    tag Tag[] 
+}
+
+model Tag {
+    id    String @id @default(cuid())
+    name String @unique
+    case Case? @relation(fields: [caseId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    caseId String?
+}
+
+model Service {
+  id    String @id @default(cuid())
+  image String
+  name String
+  description String
+
+  perks Perk[]
+}
+
+model Perk {
+    id    String @id @default(cuid())
+    name String @unique
+    service Service? @relation(fields: [serviceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    serviceId String?
 }
