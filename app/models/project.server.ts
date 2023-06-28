@@ -1,3 +1,4 @@
+import invariant from "tiny-invariant";
 import { prisma } from "~/db.server";
 
 export async function createProject(data: any) {
@@ -12,9 +13,25 @@ export async function createProject(data: any) {
 export async function getProjectByID(id: string) {
   try {
     const project = await prisma.project.findUnique({ where: { id } });
+    invariant(project, "Project not found!");
     return { project };
   } catch (error: any) {
     console.error("Error fetching project. Message: " + error.message);
+  }
+}
+
+export async function getLatestProjects() {
+  try {
+    const projects = await prisma.project.findMany({
+      take: 5,
+      orderBy: {
+        created_at: "desc",
+      },
+    });
+    invariant(projects, "No projects were found");
+    return { projects };
+  } catch (error: any) {
+    console.error("Error fetching latest projects. Message: " + error.message);
   }
 }
 

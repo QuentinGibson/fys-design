@@ -4,7 +4,10 @@
 
 @layer base{
   :root {
-    --color-primary: 187 68 10;
-    --color-secondary: 4 17 92;
+    --color-primary: 187deg 68% 10%;
+    --color-secondary: 4deg 17% 92%;
+  }
+  html,body {
+    height: 100%
   }
 }

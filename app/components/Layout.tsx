@@ -25,12 +25,12 @@ export default function Layout({ children }: LayoutProps) {
   }
 
   return (
-    <>
-      <header className=" flex flex-col justify-between items-center py-4 bg-cream dark:bg-slate-800 border-b border-[#8c805e] dark:border-slate-300 px-4">
-        <div className="flex gap-4 justify-between w-full item-center dark:text-slate-100">
+    <div className="grid grid-rows-[auto_1fr_auto] h-full text-white">
+      <header className=" flex flex-col justify-between items-center py-5 bg-primary dark:bg-slate-800 border-white/10 dark:border-slate-300 px-4 border-b">
+        <div className="flex gap-4 justify-between w-full item-center dark:text-slate-100 pl-4 pr-5 items-center">
           <div>
             <Link prefetch="intent" to="/">
-              <h1 className="text-2xl">Quentin</h1>
+              <h1 className="text-2xl uppercase font-bold">F.Y.S Design</h1>
             </Link>
           </div>
           <div className='flex gap-2 md:gap-8'>
@@ -40,19 +40,19 @@ export default function Layout({ children }: LayoutProps) {
                 <Link prefetch="intent" to="/projects">Projects</Link>
                 <Link prefetch="intent" to="/contact">Contact</Link>
               </nav> :
-              <button>
+              <button className="p-4">
                 {isMenuOpen ?
                   <HiX onClick={() => setIsMenuOpen(false)} className='text-2xl' /> :
                   <HiMenuAlt4 onClick={() => setIsMenuOpen(true)} className='text-2xl' />
                 }
               </button>
             }
-            <button>
+            {/* <button>
               {isDark ?
                 <HiOutlineSun onClick={changeTheme} className='text-2xl' /> :
                 <HiOutlineMoon onClick={changeTheme} className='text-2xl' />
               }
-            </button>
+            </button> */}
           </div>
         </div>
         {isDesktop ?
@@ -67,30 +67,21 @@ export default function Layout({ children }: LayoutProps) {
         }
       </header>
       {children}
-      <footer className="border-t border-[#8c805e] dark:border-slate-300">
-        <div className="flex flex-col gap-4 bg-cream dark:bg-slate-800 py-8 items-center font-serif text-center dark:text-slate-100">
-          <div className="flex gap-4 text-4xl ">
-            <Link target="_blank" to={"https://github.com/QuentinGibson"}>
-              <GrGithub />
-            </Link>
-            <Link target="_blank" to={"https://twitter.com/quent_made_it"}>
-              <GrTwitter />
-            </Link>
-            <Link target="_blank" to={"https://www.youtube.com/channel/UCsX8Ahu9O9dmFyoV_fgoeaw"}>
-              <GrYoutube />
-            </Link>
-          </div>
-          <p className="font-thin">© 2023 Quentin Gibson. All Rights Resevered</p>
-          <p className="font-thin">Developed by Quentin Gibson</p>
+      <footer className="bg-primary">
+        <div className="flex flex-col gap-4 py-8 items-center text-center">
+          <ul>
+            <li><Link to="">Testimonials</Link></li>
+            <li><Link to="">Services</Link></li>
+            <li><Link to="">About</Link></li>
+            <li><Link to="">Contact</Link></li>
+            <li><Link to="">Portfolio</Link></li>
+            <li><Link to="">Case Studies</Link></li>
+          </ul>
           <div className="flex gap-2">
-            {!user &&
-              <Link className="hover:underline" to={"/login"}>Login</Link>
-            }
             {user && user.role === "ADMIN" && <Link className="hover:underline" to="admin">Admin</Link>}
-            {user && <Form method="POST" action="/logout"><button className="hover:underline" type="submit">Logout</button></Form>}
           </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 };
