@@ -19,35 +19,37 @@ html.light {
 }
 
 @font-face {
-  font-family: 'Sorts Mill Goudy';
-  src: url(/fonts/SortsMillGoudy-Regular.ttf) format('truetype');
+  font-family: 'Open Sauce One';
+  src: url(/fonts/OpenSauceOne-Regular.ttf) format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Open Sauce One';
+  src: url(/fonts/OpenSauceOne-Medium.ttf) format('truetype');
+  font-weight: 500;
+  font-style: medium;
+}
+
+@font-face {
+    font-family: 'Open Sauce One';
+  src: url(/fonts/OpenSauceOne-SemiBold.ttf) format('truetype');
+  font-weight: 600;
+  font-style: semibold;
+}
+
+@font-face {
+  font-family: 'Mazius Display';
+  src: url(/fonts/MaziusDisplayRegular.otf) format('opentype');
   font-weight: 400;
   font-style: normal;
 }
 
-@font-face {
-  font-family: 'Sorts Mill Goudy';
-  src: url(/fonts/SortsMillGoudy-Italic.ttf) format('truetype');
-  font-weight: 400;
-  font-style: italic;
-}
 
 @font-face {
-  font-family: Rubik;
-  src: url(/fonts/Rubik-Regular.ttf) format('truetype');
+
+  font-family: "Staatliches";
+  src: url(/fonts/Staatliches-Regular.ttf) format('truetype');
   font-weight: 400;
   font-style: normal;
-}
-
-@font-face {
-  font-family: Rubik;
-  src: url(/fonts/Rubik-Light.ttf) format('truetype');
-  font-weight: 300;
-  font-style: light;
-}
-
-@font-face {
-  font-family: Rubik;
-  src: url(/fonts/Rubik-Bold.ttf) format('truetype');
-  font-weight: 700;
 }

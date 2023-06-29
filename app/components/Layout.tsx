@@ -30,7 +30,7 @@ export default function Layout({ children }: LayoutProps) {
         <div className="flex gap-4 justify-between w-full item-center dark:text-slate-100 pl-4 pr-5 items-center">
           <div>
             <Link prefetch="intent" to="/">
-              <h1 className="text-2xl uppercase font-bold">F.Y.S Design</h1>
+              <h1 className="text-xl uppercase font-semibold font-sauce">F.Y.S Design</h1>
             </Link>
           </div>
           <div className='flex gap-2 md:gap-8'>
@@ -42,8 +42,8 @@ export default function Layout({ children }: LayoutProps) {
               </nav> :
               <button className="p-4">
                 {isMenuOpen ?
-                  <HiX onClick={() => setIsMenuOpen(false)} className='text-2xl' /> :
-                  <HiMenuAlt4 onClick={() => setIsMenuOpen(true)} className='text-2xl' />
+                  <HiX onClick={() => setIsMenuOpen(false)} className='text-3xl' /> :
+                  <HiMenuAlt4 onClick={() => setIsMenuOpen(true)} className='text-3xl' />
                 }
               </button>
             }
@@ -67,19 +67,33 @@ export default function Layout({ children }: LayoutProps) {
         }
       </header>
       {children}
-      <footer className="bg-primary">
-        <div className="flex flex-col gap-4 py-8 items-center text-center">
-          <ul>
-            <li><Link to="">Testimonials</Link></li>
-            <li><Link to="">Services</Link></li>
-            <li><Link to="">About</Link></li>
-            <li><Link to="">Contact</Link></li>
-            <li><Link to="">Portfolio</Link></li>
-            <li><Link to="">Case Studies</Link></li>
-          </ul>
+      <footer className="bg-primary font-semibold font-sauce px-12 py-12">
+        <div className="flex flex-col gap-10 py-12 text-base items-center text-center">
+          <div className="">
+            <ul>
+              <li><Link to="">Testimonials</Link></li>
+              <li><Link to="">Services</Link></li>
+            </ul>
+          </div>
+          <div>
+            <ul>
+              <li><Link to="">About</Link></li>
+              <li><Link to="">Contact</Link></li>
+            </ul>
+          </div>
+          <div>
+            <ul>
+              <li><Link to="">Portfolio</Link></li>
+              <li><Link to="">Case Studies</Link></li>
+            </ul>
+          </div>
+
           <div className="flex gap-2">
             {user && user.role === "ADMIN" && <Link className="hover:underline" to="admin">Admin</Link>}
           </div>
+        </div>
+        <div className="flex justify-end">
+          <span className="text-sm">© F.Y.S Design</span>
         </div>
       </footer>
     </div>

@@ -6,6 +6,11 @@ export default {
   darkMode: "class",
   theme: {
     extend: {},
+    fontFamily: {
+      display: "'Staatliches', Arial, sans-serif",
+      body: "'Mazius Display', Arial, sans-serif",
+      sauce: "'Open Sauce One', Arial, sans-serif",
+    },
     colors: {
       primary: "hsl(var(--color-primary) / <alpha-value>)",
       secondary: "hsl(var(--color-secondary) / <alpha-value>)",
