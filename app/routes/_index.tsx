@@ -33,7 +33,7 @@ export default function Index() {
               <p className="font-sauce">Pacific IQ is a highly awarded Shopify centric studio located in California. Our specialty is e-commerce, where we offer elevated design, state-of-the-art engineering, and superior service.</p>
               <p className="font-sauce">Our team is always seeking new and innovative ideas, with a vision to create practical and artistic applications of advanced technology for our clients. We cater to a wide range of businesses, including innovative startups and large corporations.</p>
               <div>
-                <button className="my-8 uppercase py-3 px-9 bg-white text-primary font-display tracking-[1.8px]">Book a Consult</button>
+                <Link to="/contact" className="my-8 uppercase py-3 px-9 bg-white text-primary font-display tracking-[1.8px]">Book a Consult</Link>
               </div>
             </div>
           </div>
@@ -92,7 +92,6 @@ export default function Index() {
             <button className="bg-white text-lg text-primary px-8 py-3 font-display tracking-[1.8px]">View More</button>
           </div>
           <div>
-
           </div>
         </div>
         

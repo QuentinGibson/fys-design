@@ -21,6 +21,7 @@ export async function getTestimonialByID(id: string) {
 export async function getTestimonials() {
   try {
     const testimonials = await prisma.testimonial.findMany();
+    return { testimonials };
   } catch (error: any) {
     console.log("Error fetching testimonials. Message: " + error.message);
   }
@@ -32,6 +33,7 @@ export async function updateTestimonialByID(id: string, data: any) {
       where: { id },
       data,
     });
+    return { Message: "Sucess" };
   } catch (error: any) {
     console.log("Error updating testimonial. Message: " + error.message);
   }
