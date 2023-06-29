@@ -32,6 +32,14 @@ model Testimonial {
   created_at DateTime @default(now())
 }
 
+model HomeTestimonial {
+  id         String   @id @default(cuid())
+  name       String   @unique
+  image      String
+  content    String
+  created_at DateTime @default(now())
+}
+
 model Project {
   id         String   @id @default(cuid())
   name       String   @unique

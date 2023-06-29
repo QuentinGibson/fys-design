@@ -1,7 +1,6 @@
-import { Form, Link } from "@remix-run/react";
-import { ReactNode, useEffect, useState } from "react";
-import { GrGithub, GrLinkedin, GrTwitter, GrYoutube } from 'react-icons/gr'
-import { HiMenuAlt4, HiOutlineSun, HiOutlineMoon, HiX } from 'react-icons/hi'
+import { Link } from "@remix-run/react";
+import { ReactNode, useState } from "react";
+import { HiMenuAlt4, HiX } from 'react-icons/hi'
 import { Theme, useTheme } from "~/utils/theme-provider";
 import { useMediaQuery } from "usehooks-ts";
 import { useOptionalUser } from "~/utils";
@@ -14,7 +13,8 @@ export default function Layout({ children }: LayoutProps) {
   const [theme, setTheme] = useTheme();
   const isDark = theme === Theme.DARK;
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  let isDesktop = useMediaQuery('(min-width: 768px)')
+  let isDesktop = useMediaQuery('(min-width: 1050px)')
+  let isPhone = useMediaQuery('(max-width: 410px')
 
   const user = useOptionalUser()
   const changeTheme = () => {
@@ -35,17 +35,22 @@ export default function Layout({ children }: LayoutProps) {
           </div>
           <div className='flex gap-2 md:gap-8'>
             {isDesktop ?
-              <nav className="flex gap-4 items-center text-xl">
+              <nav className="flex gap-4 items-center text-xl box-border">
+                <Link className="hover:bg-white hover:text-primary px-8 py-3 font-display font-semibold border-2  text-sm" prefetch="intent" to="/contact">Contact Us</Link>
                 <Link prefetch="intent" to="/blog">Blog</Link>
                 <Link prefetch="intent" to="/projects">Projects</Link>
-                <Link prefetch="intent" to="/contact">Contact</Link>
               </nav> :
-              <button className="p-4">
-                {isMenuOpen ?
-                  <HiX onClick={() => setIsMenuOpen(false)} className='text-3xl' /> :
-                  <HiMenuAlt4 onClick={() => setIsMenuOpen(true)} className='text-3xl' />
-                }
-              </button>
+              <div className="flex justify-center items-center">
+                {!isPhone && <Link className="hover:bg-white hover:text-primary px-8 py-3 font-display font-semibold border-2 text-sm tracking-widest" prefetch="intent" to="/contact">Contact Us</Link>}
+
+                <button className="p-4">
+                  {isMenuOpen ?
+                    <HiX onClick={() => setIsMenuOpen(false)} className='text-3xl' /> :
+                    <HiMenuAlt4 onClick={() => setIsMenuOpen(true)} className='text-3xl' />
+                  }
+                </button>
+              </div>
+
             }
             {/* <button>
               {isDark ?
