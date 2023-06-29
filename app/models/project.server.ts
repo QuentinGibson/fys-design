@@ -28,7 +28,6 @@ export async function getLatestProjects() {
         created_at: "desc",
       },
     });
-    invariant(projects, "No projects were found");
     return { projects };
   } catch (error: any) {
     console.error("Error fetching latest projects. Message: " + error.message);
