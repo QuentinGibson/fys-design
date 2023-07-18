@@ -37,12 +37,12 @@ export default function Layout({ children }: LayoutProps) {
             {isDesktop ?
               <nav className="flex justify-between w-full items-center text-base box-border font-display">
                 <div className="flex gap-4 font-bold uppercase">
-                  <Link prefetch="intent" to="/blog">Home</Link>
-                  <Link prefetch="intent" to="/blog">Services</Link>
-                  <Link prefetch="intent" to="/blog">About</Link>
-                  <Link prefetch="intent" to="/blog">Portfolio</Link>
-                  <Link prefetch="intent" to="/blog">Case Studies</Link>
-                  <Link prefetch="intent" to="/projects">Testimonials</Link>
+                  <Link prefetch="intent" to="/">Home</Link>
+                  <Link prefetch="intent" to="/services">Services</Link>
+                  <Link prefetch="intent" to="/about">About</Link>
+                  <Link prefetch="intent" to="/portfolio">Portfolio</Link>
+                  <Link prefetch="intent" to="/case">Case Studies</Link>
+                  <Link prefetch="intent" to="/testimonials">Testimonials</Link>
                 </div>
                 <div>
                   <Link className="hover:bg-white hover:text-primary px-8 py-3 font-display font-semibold border-2  text-sm" prefetch="intent" to="/contact">Contact Us</Link>
