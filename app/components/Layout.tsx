@@ -73,23 +73,15 @@ export default function Layout({ children }: LayoutProps) {
       </header>
       {children}
       <footer className="bg-primary font-semibold font-sauce px-12 py-12">
-        <div className="flex flex-col gap-10 py-12 text-base items-center text-center">
-          <div className="">
-            <ul>
-              <li><Link to="">Testimonials</Link></li>
-              <li><Link to="">Services</Link></li>
-            </ul>
-          </div>
-          <div>
-            <ul>
-              <li><Link to="">About</Link></li>
-              <li><Link to="">Contact</Link></li>
-            </ul>
-          </div>
-          <div>
-            <ul>
-              <li><Link to="">Portfolio</Link></li>
-              <li><Link to="">Case Studies</Link></li>
+        <div className="flex flex-col gap-10 py-12 text-base items-center text-center lg:flex-row justify-center">
+          <div className="w-full flex justify-center md:justify-start">
+            <ul className="grid md:grid-cols-3 md:flex-row gap-4">
+              <li className="text-start"><Link to="">Testimonials</Link></li>
+              <li className="text-start"><Link to="">Services</Link></li>
+              <li className="text-start"><Link to="">About</Link></li>
+              <li className="text-start"><Link to="">Contact</Link></li>
+              <li className="text-start"><Link to="">Portfolio</Link></li>
+              <li className="text-start"><Link to="">Case Studies</Link></li>
             </ul>
           </div>
 
