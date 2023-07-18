@@ -63,7 +63,7 @@ export default function Index() {
               <p>We are a team of certified Shopify Experts with specialized skills and extensive experience in creating high-quality websites that are designed to drive conversions. Our expertise enables us to work effectively to develop completely customized solutions tailored to your needs.</p>
             </div>
           </div>
-          <div className="rounded-t-full flex justify-center w-11/12 sm:w-fit relative my-24 lg:order-1">
+          <div className="rounded-t-full flex justify-center w-11/12 sm:w-fit relative my-24 lg:order-1 mx-auto">
             <img className="rounded-t-full w-full max-w-sm" src="/static/service-talk.jpeg" alt="" />
             <OrangeSquiggleAlt />
           </div>
@@ -86,7 +86,7 @@ export default function Index() {
       </section>
       <section className="py-24 font-sauce text-sm max-w-lg mx-auto">
         <div className="flex">
-          <div>
+          <div className="flex flex-col justify-center w-full text-center">
             <h1 className="text-5xl font-body text-[45px]">Client Testimonials</h1>
             <p className="py-6">Kind words from some of our favorite clients.</p>
             <button className="bg-white text-lg text-primary px-8 py-3 font-display tracking-[1.8px]">View More</button>
