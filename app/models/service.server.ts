@@ -1,4 +1,12 @@
 import { prisma } from "~/db.server";
+import type { Service, Perk } from "@prisma/client";
+
+type CustomPerk = Omit<Perk, "created_at"> & { created_at: string };
+
+export type CustomService = Omit<Service, "created_at"> & {
+  created_at: string;
+  perks: CustomPerk[];
+};
 
 export async function createService(data: any) {
   try {
@@ -15,6 +23,17 @@ export async function getServiceByID(id: string) {
     return { service };
   } catch (error: any) {
     console.error("Error finding service. Message: " + error.message);
+  }
+}
+
+export async function getServicesAndPerks() {
+  try {
+    const services = await prisma.service.findMany({
+      include: { perks: true },
+    });
+    return { services };
+  } catch (error: any) {
+    console.error("Error getting all services. Message: " + error.message);
   }
 }
 
