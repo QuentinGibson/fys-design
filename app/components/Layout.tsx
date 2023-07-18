@@ -27,22 +27,30 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="grid grid-rows-[auto_1fr_auto] h-full text-white">
       <header className=" flex flex-col justify-between items-center py-5 bg-primary dark:bg-slate-800 border-white/10 dark:border-slate-300 px-4 border-b">
-        <div className="flex gap-4 justify-between w-full item-center dark:text-slate-100 pl-4 pr-5 items-center">
-          <div>
+        <div className="flex gap-4 justify-start w-full item-center dark:text-slate-100 pl-4 pr-5 items-center">
+          <div className="min-w-[180px]">
             <Link prefetch="intent" to="/">
               <h1 className="text-xl uppercase font-semibold font-sauce">F.Y.S Design</h1>
             </Link>
           </div>
-          <div className='flex gap-2 md:gap-8'>
+          <div className='flex gap-2 md:gap-8 w-full'>
             {isDesktop ?
-              <nav className="flex gap-4 items-center text-xl box-border">
-                <Link className="hover:bg-white hover:text-primary px-8 py-3 font-display font-semibold border-2  text-sm" prefetch="intent" to="/contact">Contact Us</Link>
-                <Link prefetch="intent" to="/blog">Blog</Link>
-                <Link prefetch="intent" to="/projects">Projects</Link>
+              <nav className="flex justify-between w-full items-center text-base box-border font-display">
+                <div className="flex gap-4 font-bold uppercase">
+                  <Link prefetch="intent" to="/blog">Home</Link>
+                  <Link prefetch="intent" to="/blog">Services</Link>
+                  <Link prefetch="intent" to="/blog">About</Link>
+                  <Link prefetch="intent" to="/blog">Portfolio</Link>
+                  <Link prefetch="intent" to="/blog">Case Studies</Link>
+                  <Link prefetch="intent" to="/projects">Testimonials</Link>
+                </div>
+                <div>
+                  <Link className="hover:bg-white hover:text-primary px-8 py-3 font-display font-semibold border-2  text-sm" prefetch="intent" to="/contact">Contact Us</Link>
+                </div>
               </nav> :
-              <div className="flex justify-center items-center">
-                {!isPhone && <Link className="hover:bg-white hover:text-primary px-8 py-3 font-display font-semibold border-2 text-sm tracking-widest" prefetch="intent" to="/contact">Contact Us</Link>}
-
+              <div className="flex justify-end w-full items-center">
+                {!isPhone && 
+                  <Link className="hover:bg-white hover:text-primary px-8 py-3 font-display font-semibold border-2 text-sm tracking-widest" prefetch="intent" to="/contact">Contact Us</Link>}
                 <button className="p-4">
                   {isMenuOpen ?
                     <HiX onClick={() => setIsMenuOpen(false)} className='text-3xl' /> :
@@ -63,10 +71,10 @@ export default function Layout({ children }: LayoutProps) {
         {isDesktop ?
           null :
           isMenuOpen && (
-            <nav className="flex gap-4 my-2">
-              <Link prefetch="intent" to="/blog" onClick={closeMenu}>Blog</Link>
-              <Link prefetch="intent" to="/projects" onClick={closeMenu}>Projects</Link>
-              <Link prefetch="intent" to="/contact" onClick={closeMenu}>Contact</Link>
+            <nav className="flex justify-center gap-4 my-2">
+              <Link className="hover:font-bold" prefetch="intent" to="/blog" onClick={closeMenu}>Blog</Link>
+              <Link  className="hover:font-bold" prefetch="intent" to="/projects" onClick={closeMenu}>Projects</Link>
+              <Link className="hover:font-bold" prefetch="intent" to="/contact" onClick={closeMenu}>Contact</Link>
             </nav>
           )
         }
