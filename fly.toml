@@ -1,6 +1,7 @@
 app = "fys-design-52b9"
 
 kill_signal = "SIGINT"
+primary_region = "atl"
 kill_timeout = 5
 processes = []
 
