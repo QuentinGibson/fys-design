@@ -6,6 +6,10 @@ html.light {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAACgUlEQVRIS81WP2gTcRR+712UdqkOIomo1KZHcREE0UVdVJIrdrMYk5i6SDcnpRQdMhRsXEVQcDFtYrGDqNRLUtEOIjiIg+DQXLIoNEMXO7Qx5O75LslZqQm51Fb9wZHkd+/P9937fl8OM+H+MiCsAsASM5QQ4DMplv7OX8zE42DJ/n+x3lzp3V2u7tCQWQPgXgT0MoAPM5F++fx9CZE1ufHcMiExOGN8/FcsMlF/EJiuC+gzTXE+Gd7f3dOzqxtWv/uYLC8gnSKGoIA/8TOB4SEQJ4LTBeNvEdEv9Z1EojHpd/4XHPPyYHUA/FD1mCU0yVZM85UL9R1jBS8z4LVGRFkkFtPSxux2k8hG1RvMfKfRZ0Ue5qRc9wZTxsrG3i0JOIF69NAAsfJCCqj2niSMB1LG5HaRyEbU+ww82uh1mypW4txs8Vurfm0JOInZiP+mTGOi9lskFUwbV7eSRC40sM9UrCTWtW4iw0ggbaTa9XBNwC4kJC4KiaR83SnXApocC8wUvrRr0u7+XFg9rSA8st1FZLpICsYCU/n37fIaU3ITth4zJ2dDUcgmcVhk9RUQJ7Tp/IPOqtSjxRq7KhXPGCPEa2AQX1ZMHBl6vLjstl5HE3CK1j3Zk5QxD9UVBZ8IcMEEvtXsoG0Ekw35D1geHJZ822X21mvgXS2VdwzDLX77TG5+ZSJqWCqMAfOR9Sr8CoDmZW8JCUtEvFytWj5CEouGgyIR+SOC4068AMjZFh2YKrzeDJI/IuA01KPqKLJ1QURw1g0ImdiaHFYdGJNiBs/c5LSK2RICTvGnIq2uKmliu0dFFD6xQ6+Q2iNNaq8povUSsPU2mC7qstf0DaBTMj8AOdHjsMkscxoAAAAASUVORK5CYII=)
 }
 
+.center-squiggle {
+  background-image: url("/squiggle-center.svg")
+}
+
 .squiggle {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAYAAAAkuj5RAAABzElEQVRIS82WPyhFURzH71nEZpA8RW+RLEqJBQsDxUZKYZLNRBKDQfmzSlFv8cpk8hRCMlgMMiiDbJQ3WBiwcH1+9bt16N7uuXoPt76dc8/5nd/3+z3n3HOu8X3/zfO8F/AA8uAa7IMDY8wH5b940FmOkB5FmrIKpAwdfoTCV9pzYBkjl3/lAnndcE+CzjANYqCMDkFKXbVTyqBWa0BGjdz+lhF0tcE1DXotziPdHRe6W/ImShAJmukbBhMaI1tthNXYLrYJuKfgWFGeZ8olsAa31L88kQaCKJLVU98Fddo2QyJJWJQHvnUSj2vyRV35pyiyWAOWkVnqC/qewcRYIR0gvJp8WSB7/R2MwrEVx+FsQBJBMqgkJZSnQLbUXRxJXD95O4jZBGlwo3nP48ZJfyIDakK+DZmpBnAvq4KJDRey7zEIL6VNPtR57dvTmX90zZfYgJqQM1lM9CnRla7IXNiHFiK8hrYBFV+p/auMDQ4MV/3JV8DOzAwOqYhGq/2Yuhx3wcUosxkc0bXU5TJqseIPqctdc+Ks2gr80QqEzKicGv2gy1GEXJJy22cRvuM4JjSsIAaCzNZ132TNeoW1GvKrcibiER71B5DIzyf5GokELjZZLgAAAABJRU5ErkJggg==);
   opacity: 0.05;
@@ -24,6 +28,7 @@ html.light {
   font-weight: 400;
   font-style: normal;
 }
+
 @font-face {
   font-family: 'Open Sauce One';
   src: url(/fonts/OpenSauceOne-Medium.ttf) format('truetype');
@@ -32,7 +37,7 @@ html.light {
 }
 
 @font-face {
-    font-family: 'Open Sauce One';
+  font-family: 'Open Sauce One';
   src: url(/fonts/OpenSauceOne-SemiBold.ttf) format('truetype');
   font-weight: 600;
   font-style: semibold;

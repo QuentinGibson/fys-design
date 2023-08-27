@@ -14,6 +14,7 @@ export default {
     colors: {
       primary: "hsl(var(--color-primary) / <alpha-value>)",
       secondary: "hsl(var(--color-secondary) / <alpha-value>)",
+      tertiary: "hsl(var(--color-tertiary) / <alpha-value>)",
       transparent: "transparent",
       current: "currentColor",
       black: colors.black,
