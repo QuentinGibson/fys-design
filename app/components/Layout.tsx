@@ -14,7 +14,6 @@ export default function Layout({ children }: LayoutProps) {
   const isDark = theme === Theme.DARK;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   let isDesktop = useMediaQuery("(min-width: 1050px)");
-  let isPhone = useMediaQuery("(max-width: 410px");
 
   const user = useOptionalUser();
   const changeTheme = () => {
@@ -28,7 +27,7 @@ export default function Layout({ children }: LayoutProps) {
     <div className="grid h-full grid-rows-[auto_1fr_auto] text-white">
       <header className=" dark:bg-slate-800 dark:border-slate-300 flex flex-col items-center justify-between border-b border-white/10 bg-primary px-4 py-5">
         <div className="item-center dark:text-slate-100 flex w-full items-center justify-start gap-4 pl-4 pr-5">
-          <div className="min-w-[240px]">
+          <div className="">
             <Link prefetch="intent" to="/">
               <h1 className="font-sauce text-3xl font-semibold uppercase">
                 F.Y.S Design
@@ -70,7 +69,7 @@ export default function Layout({ children }: LayoutProps) {
               </nav>
             ) : (
               <div className="flex w-full items-center justify-end">
-                {!isPhone && (
+                {!isDesktop && (
                   <button className="p-4">
                     {isMenuOpen ? (
                       <HiX
