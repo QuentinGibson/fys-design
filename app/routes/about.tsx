@@ -6,24 +6,24 @@ import Squiggle from "~/components/Squiggle";
 export default function AboutRoute() {
   return (
     <main>
-      <section className="grid mx-4">
-        <div className="flex flex-col gap-4 pt-20 pb-5">
+      <section className="grid mx-4 lg:grid-cols-2 lg:mx-8 lg:py-20 lg:items-center lg:gap-x-12 lg:grid">
+        <div className="flex flex-col gap-8 pt-20 pb-5 mx-auto">
           <p className="font-display uppercase text-lg tracking-[1.8px] inline-block">
             We're F.Y.S
           </p>
-          <p className="font-body text-4xl md:text-6xl">
+          <p className="font-body text-4xl md:text-6xl lg:max-w-md">
             We are driven by our passion for design & results.
           </p>
           <div className="flex">
             <Link
               to="/contact"
-              className="uppercase px-9 py-3 bg-white text-primary font-display"
+              className="uppercase px-9 py-3 bg-white text-primary font-display tracking-widest"
             >
               Book A Consult
             </Link>
           </div>
         </div>
-        <div className="relative mt-10 flex  justify-center w-11/12 sm:w-fit">
+        <div className="relative mt-10 flex  justify-center w-11/12 sm:w-fit lg:order-first mx-auto">
           <OrangeSquiggle />
           <div className="max-w-sm">
             <img
@@ -34,15 +34,18 @@ export default function AboutRoute() {
           </div>
         </div>
       </section>
-      <section className="pt-20">
-        <div className="flex items-center flex-col gap-4">
-          <p className="uppercase font-display">Form</p>
-          <div className="flex items-center flex-col">
+      <section className="pt-20 lg:flex lg:gap-8 lg:justify-center mx-auto">
+        <div className="flex items-center flex-col gap-4 lg:justify-center">
+          <p className="uppercase font-display lg:order-last">Form</p>
+          <div className="flex items-center flex-col lg:flex-row">
             <div
               id="circle"
               className="rounded-full h-[9px] w-[9px] bg-tertiary"
             ></div>
-            <div id="line" className="w-[1px] h-20 bg-tertiary"></div>
+            <div
+              id="line"
+              className="w-[1px] h-20 lg:w-40 lg:h-[1px] bg-tertiary"
+            ></div>
           </div>
         </div>
         <div
@@ -58,9 +61,12 @@ export default function AboutRoute() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-center gap-4">
-          <div className="flex items-center flex-col">
-            <div id="line" className="w-[1px] h-20 bg-tertiary"></div>
+        <div className="flex flex-col items-center gap-4 lg:justify-center">
+          <div className="flex items-center flex-col lg:flex-row">
+            <div
+              id="line"
+              className="w-[1px] h-20 lg:w-40 lg:h-[1px] bg-tertiary"
+            ></div>
             <div
               id="circle"
               className="rounded-full h-[9px] w-[9px] bg-tertiary"
@@ -70,8 +76,8 @@ export default function AboutRoute() {
         </div>
       </section>
       <section>
-        <div className="mx-4 my-16">
-          <p className="text-4xl leading-10 font-body">
+        <div className="my-16 max-w-2xl mx-auto">
+          <p className="text-4xl leading-10 font-body lg:text-6xl lg:py-16 text-center">
             We create beautiful websites that are optimized to convert.
           </p>
         </div>
@@ -87,7 +93,7 @@ export default function AboutRoute() {
           <p className="font-display uppercase">Our Process</p>
           <p className="font-body text-5xl">How we work</p>
         </div>
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-4 lg:max-w-2xl mx-auto">
           <div className="flex items-center flex-col mt-20">
             <div id="line" className="w-[1px] h-20 bg-tertiary"></div>
             <div
