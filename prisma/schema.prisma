@@ -45,6 +45,7 @@ model Project {
   name       String   @unique
   image      String
   link       String?
+  slug       String   @unique
   summary    String
   content    String
   created_at DateTime @default(now())
@@ -73,6 +74,7 @@ model Case {
   id         String   @id @default(cuid())
   logo       String
   image      String
+  slug       String   @unique
   name       String   @unique
   content    String
   created_at DateTime @default(now())

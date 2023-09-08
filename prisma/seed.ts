@@ -171,6 +171,7 @@ async function seed() {
     data: {
       name: "Greats of Craft",
       image: "/static/projects/greats-of-craft.jpeg",
+      slug: "greats-of-craft",
       industries: {
         connect: [
           { id: foodAndBeverageIndustry.id },
@@ -195,6 +196,7 @@ async function seed() {
     data: {
       name: "Mariani Premium Dried Fruit",
       image: "/static/projects/mariani.png",
+      slug: "mariani-premium-druid-fruit",
       industries: {
         connect: [
           { id: eCommerceIndustry.id },
@@ -216,6 +218,7 @@ async function seed() {
   await prisma.project.create({
     data: {
       name: "Grace Rose Farm",
+      slug: "grace-rose-farm",
       image: "/static/projects/grace-rose-farm.jpeg",
       industries: {
         connect: [{ id: eCommerceIndustry.id }, { id: homeGoodsIndustry.id }],
@@ -237,6 +240,7 @@ async function seed() {
     data: {
       name: "Surely Non-Alchoholic Wine",
       image: "/static/projects/surely.jpeg",
+      slug: "surely-wine",
       industries: {
         connect: [
           { id: eCommerceIndustry.id },
@@ -260,6 +264,7 @@ async function seed() {
     data: {
       name: "FRESHY World",
       image: "/static/projects/fresh-world.jpeg",
+      slug: "freshy-world",
       industries: {
         connect: [{ id: eCommerceIndustry.id }, { id: fashionIndustry.id }],
       },
@@ -281,6 +286,7 @@ async function seed() {
     data: {
       name: "Sweet E’s Bake Shop Reaches Record Conversion Rates Following Website Redesign from Pacific IQ",
       image: "/static/cases/sweet-e.png",
+      slug: "sweet-e",
       logo: "/static/cases/logos/sweet-e-logo.png",
       tag: { connect: [{ id: growthTag.id }] },
       content: "",
@@ -291,6 +297,7 @@ async function seed() {
     data: {
       name: "Furbish Studio partnered with Pacific IQ to improve its website conversion rate by 2.5x, resulting in 49% more sales.",
       image: "/static/cases/furbish.png",
+      slug: "furbish-studio",
       logo: "/static/cases/furbish-logo.png",
       tag: { connect: [{ id: growthTag.id }] },
       content: "",

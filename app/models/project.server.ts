@@ -10,6 +10,16 @@ export async function createProject(data: any) {
   }
 }
 
+export async function getProjectBySlug(slug: string) {
+  try {
+    const project = await prisma.project.findUnique({ where: { slug }, include: { services: true, industries: true} });
+    invariant(project, "Project not found!");
+    return { project };
+  } catch (error: any) {
+    console.error("Error fetching project. Message: " + error.message);
+  }
+}
+
 export async function getProjectByID(id: string) {
   try {
     const project = await prisma.project.findUnique({ where: { id } });
@@ -28,7 +38,7 @@ export async function getLatestProjects() {
         created_at: "desc",
       },
     });
-    return { projects };
+    return  projects ;
   } catch (error: any) {
     console.error("Error fetching latest projects. Message: " + error.message);
   }

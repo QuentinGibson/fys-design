@@ -12,14 +12,13 @@ import { useOptionalUser } from "~/utils";
 export const meta: V2_MetaFunction = () => [{ title: "FYS Design" }];
 
 export const loader = async ({ request, params }: LoaderArgs) => {
-  const latestProjects = await getLatestProjects()
-  invariant(latestProjects, "No projects found in latest projects")
-  return { latestProjects }
+  const projects = await getLatestProjects()
+  invariant(projects, "No projects found in latest projects")
+  return { projects }
 };
 
 export default function Index() {
-  const { latestProjects } = useLoaderData<typeof loader>()
-  const { projects } = latestProjects
+  const { projects } = useLoaderData<typeof loader>()
   const user = useOptionalUser();
   return (
     <main>
