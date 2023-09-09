@@ -20,7 +20,7 @@ export default function CaseStudies() {
           const caseLink = `/case-studies/${caseData.slug}`
           return (
             <div key={index} className="grid md:grid-cols-[1fr_1.5fr] box-border gap-y-9">
-              <div className="inline-block">
+              <div className="inline-block overflow-hidden">
                 <Link className="overflow-hidden max-w-[400px] w-full" to={caseLink}>
                   <img className="hover:scale-110 hover:opacity-75 duration-1000 h-full" width={10000} src={caseData.image} alt={`A featured sample of ${caseData.name}`} />
                 </Link>

@@ -26,11 +26,11 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="grid h-full grid-rows-[auto_1fr_auto] text-white">
       <header className=" dark:bg-slate-800 dark:border-slate-300 flex flex-col items-center justify-between border-b border-white/10 bg-primary px-4 py-5">
-        <div className="item-center dark:text-slate-100 flex w-full items-center justify-start gap-4 pl-4 pr-5">
+        <div className="item-center dark:text-slate-100 flex w-full items-center justify-start md:gap-8 pl-4 pr-5">
           <div className="">
             <Link prefetch="intent" to="/">
               <h1 className="font-sauce text-3xl font-semibold uppercase">
-                F.Y.S Design
+                <img src={"/static/FYS-logo.svg"} alt="" />
               </h1>
             </Link>
           </div>
