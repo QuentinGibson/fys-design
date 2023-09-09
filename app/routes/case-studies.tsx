@@ -19,12 +19,15 @@ export default function CaseStudies() {
         {cases.map((caseData, index) => {
           const caseLink = `/case-studies/${caseData.slug}`
           return (
-            <div key={index} className="grid grid-cols-[1fr_1.5fr] box-border h-[600px]">
-              <Link className="overflow-hidden max-w-[400px] w-full" to={caseLink}>
-                <img className="hover:scale-110 hover:opacity-75 duration-1000" width={10000} src={caseData.image} alt={`A featured sample of ${caseData.name}`} />
-              </Link>
-              <div className="flex justify-between p-12 flex-col items-stretch">
-                <img width={300} src={caseData.logo} alt={`The logo for ${caseData.name}`} />
+            <div key={index} className="grid md:grid-cols-[1fr_1.5fr] box-border gap-y-9">
+              <div className="inline-block">
+                <Link className="overflow-hidden max-w-[400px] w-full" to={caseLink}>
+                  <img className="hover:scale-110 hover:opacity-75 duration-1000 h-full" width={10000} src={caseData.image} alt={`A featured sample of ${caseData.name}`} />
+                </Link>
+              </div>
+
+              <div className="flex justify-between p-12 flex-col items-stretch gap-y-9">
+                <img className="inline-block" width={300} src={caseData.logo} alt={`The logo for ${caseData.name}`} />
                 <p className="font-body text-5xl ">
                   {caseData.name}
                 </p>

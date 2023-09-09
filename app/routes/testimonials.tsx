@@ -15,8 +15,8 @@ export default function TestimonialRoute() {
       </div>
       {testimonials.map((testimony, index) => {
         return (
-          <div key={index} className="p-20 border-b ">
-            <div className="grid grid-cols-[1fr_1.5fr_1.5fr] gap-x-9">
+          <div key={index} className="p-20 border-b">
+            <div className="grid md:grid-cols-[1fr_1.5fr_1.5fr] gap-x-9 gap-y-20">
               <div className="flex justify-center items-center">
                 <p className="font-bold text-5xl font-body">{testimony.name}</p>
               </div>
