@@ -15,7 +15,7 @@ export default function PortfolioRoute() {
       <div className="flex justify-center items-center my-28">
         <h1 className="font-body text-5xl">Some of our favorite projects</h1>
       </div>
-      <div className="grid md:grid-cols-2 md:gap-x-6 md:gap-y-24 mx-4 items-center justify-items-center">
+      <div className="grid md:grid-cols-2 md:gap-x-6 gap-y-24 mx-4 items-center justify-items-center">
         {projects.map((project, index) => {
           return (
             <div className="max-w-[400px]" key={index}>

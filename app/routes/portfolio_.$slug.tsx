@@ -15,8 +15,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const { project } = useLoaderData<typeof loader>()
   return (
     <main>
-      <div className="grid grid-cols-[1fr_1.5fr] border-y min-h-[552px]">
-        <div className="border-r flex justify-center items-center p-9">
+      <div className="grid md:grid-cols-[1fr_1.5fr] border-y min-h-[552px]">
+        <div className="md:border-r border-b md:border-b-0 flex justify-center items-center p-9">
           <h1 className="text-5xl font-body">{project.name}</h1>
         </div>
         <div className="w-full max-w-[544px] gap-y-20 px-6 my-6 mx-auto justify-center content-center grid gap-x-4 grid-cols-[1fr_1fr]">
