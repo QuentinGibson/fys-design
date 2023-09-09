@@ -20,8 +20,8 @@ export async function getCaseByID(id: string) {
 
 export async function getCases() {
   try {
-    const cases = await prisma.case.findMany();
-    return { cases };
+    const cases = await prisma.case.findMany({include: {tag: true}});
+    return { cases } ;
   } catch (error: any) {
     console.error("Error getting all cases. Message: " + error.message);
   }

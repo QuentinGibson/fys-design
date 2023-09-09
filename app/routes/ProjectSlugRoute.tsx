@@ -50,10 +50,9 @@ export default function ProjectSlugRoute() {
         {project.content}
       </div>
       <div>
-        <Squiggle>
+        <Squiggle />
 
-          <ContactForm />
-        </Squiggle>
+        <ContactForm />
       </div>
     </main>
   );

@@ -50,7 +50,7 @@ export default function Layout({ children }: LayoutProps) {
                   <Link prefetch="intent" to="/portfolio">
                     Portfolio
                   </Link>
-                  <Link prefetch="intent" to="/case">
+                  <Link prefetch="intent" to="/case-studies">
                     Case Studies
                   </Link>
                   <Link prefetch="intent" to="/testimonials">
@@ -97,33 +97,33 @@ export default function Layout({ children }: LayoutProps) {
         {isDesktop
           ? null
           : isMenuOpen && (
-              <nav className="my-2 flex justify-center gap-4">
-                <Link
-                  className="hover:font-bold"
-                  prefetch="intent"
-                  to="/blog"
-                  onClick={closeMenu}
-                >
-                  Blog
-                </Link>
-                <Link
-                  className="hover:font-bold"
-                  prefetch="intent"
-                  to="/projects"
-                  onClick={closeMenu}
-                >
-                  Projects
-                </Link>
-                <Link
-                  className="hover:font-bold"
-                  prefetch="intent"
-                  to="/contact"
-                  onClick={closeMenu}
-                >
-                  Contact
-                </Link>
-              </nav>
-            )}
+            <nav className="my-2 flex justify-center gap-4">
+              <Link
+                className="hover:font-bold"
+                prefetch="intent"
+                to="/blog"
+                onClick={closeMenu}
+              >
+                Blog
+              </Link>
+              <Link
+                className="hover:font-bold"
+                prefetch="intent"
+                to="/projects"
+                onClick={closeMenu}
+              >
+                Projects
+              </Link>
+              <Link
+                className="hover:font-bold"
+                prefetch="intent"
+                to="/contact"
+                onClick={closeMenu}
+              >
+                Contact
+              </Link>
+            </nav>
+          )}
       </header>
       {children}
       <footer className="bg-primary px-12 py-12 font-sauce font-semibold">

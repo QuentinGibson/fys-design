@@ -298,7 +298,7 @@ async function seed() {
       name: "Furbish Studio partnered with Pacific IQ to improve its website conversion rate by 2.5x, resulting in 49% more sales.",
       image: "/static/cases/furbish.png",
       slug: "furbish-studio",
-      logo: "/static/cases/furbish-logo.png",
+      logo: "/static/cases/logos/furbish-logo.png",
       tag: { connect: [{ id: growthTag.id }] },
       content: "",
     },
