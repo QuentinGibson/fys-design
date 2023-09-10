@@ -17,6 +17,7 @@ export default {
       tertiary: "hsl(var(--color-tertiary) / <alpha-value>)",
       transparent: "transparent",
       current: "currentColor",
+      red: colors.red,
       black: colors.black,
       white: colors.white,
       gray: colors.gray,
