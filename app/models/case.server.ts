@@ -18,6 +18,18 @@ export async function getCaseByID(id: string) {
   }
 }
 
+export async function getCaseBySlug(slug: string) {
+   try {
+    const caseObj = await prisma.case.findUnique({ where: { slug }, include: {tag: true} });
+     if (!caseObj) {
+      throw "No case found!"
+    }
+    return { caseObj };
+  } catch (error: any) {
+    console.error("Error finding case. Message: " + error.message);
+  } 
+}
+
 export async function getCases() {
   try {
     const cases = await prisma.case.findMany({include: {tag: true}});
