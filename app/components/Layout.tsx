@@ -36,7 +36,7 @@ export default function Layout({ children }: LayoutProps) {
           </div>
           <div className="flex w-full gap-2 md:gap-8">
             {isDesktop ? (
-              <nav className="box-border flex w-full items-center justify-between font-display text-base">
+              <nav className="box-border flex w-full items-center justify-between font-display tracking-[1.8px] text-base">
                 <div className="flex gap-8 font-bold uppercase">
                   <Link prefetch="intent" to="/">
                     Home
