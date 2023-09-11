@@ -97,22 +97,46 @@ export default function Layout({ children }: LayoutProps) {
         {isDesktop
           ? null
           : isMenuOpen && (
-            <nav className="my-2 flex justify-center gap-4">
+            <nav className="my-2 flex flex-col justify-center gap-4">
               <Link
                 className="hover:font-bold"
                 prefetch="intent"
-                to="/blog"
+                to="/services"
                 onClick={closeMenu}
               >
-                Blog
+                Services
               </Link>
               <Link
                 className="hover:font-bold"
                 prefetch="intent"
-                to="/projects"
+                to="/about"
                 onClick={closeMenu}
               >
-                Projects
+                About
+              </Link>
+              <Link
+                className="hover:font-bold"
+                prefetch="intent"
+                to="/portfolio"
+                onClick={closeMenu}
+              >
+                Portfolio
+              </Link>
+              <Link
+                className="hover:font-bold"
+                prefetch="intent"
+                to="/case-studies"
+                onClick={closeMenu}
+              >
+                Case Studies
+              </Link>
+              <Link
+                className="hover:font-bold"
+                prefetch="intent"
+                to="/testimonials"
+                onClick={closeMenu}
+              >
+                Testimonials
               </Link>
               <Link
                 className="hover:font-bold"
@@ -120,7 +144,7 @@ export default function Layout({ children }: LayoutProps) {
                 to="/contact"
                 onClick={closeMenu}
               >
-                Contact
+                Contact Us
               </Link>
             </nav>
           )}

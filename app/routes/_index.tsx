@@ -76,7 +76,7 @@ export default function Index() {
           {projects.map((project, key) => (
             <li key={key}>
               <div className="text-center" >
-                <a className="opacity-75 hover:opacity-100 transition duration-500 text-4xl" md:text-6xl href={`project/${project.id}`}>
+                <a className="opacity-75 hover:opacity-100 transition duration-500 text-4xl md:text-6xl" href={`project/${project.id}`}>
                   {project.name}
                 </a>
               </div>
@@ -93,7 +93,7 @@ export default function Index() {
           <div>
           </div>
         </div>
-        
+
       </section>
       <section className="py-24 relative">
         <Squiggle />
