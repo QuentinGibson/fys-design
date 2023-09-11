@@ -126,7 +126,7 @@ export default function Layout({ children }: LayoutProps) {
           )}
       </header>
       {children}
-      <footer className="bg-primary px-12 py-12 font-sauce font-semibold">
+      <footer className="bg-primary px-12 py-8 font-sauce font-semibold">
         <div className="flex flex-col items-center justify-center gap-10 py-12 text-center text-base lg:flex-row">
           <div className="flex w-full justify-center md:justify-start">
             <ul className="grid gap-4 md:grid-cols-3 md:flex-row">

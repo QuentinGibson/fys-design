@@ -53,9 +53,9 @@ export async function getProjects() {
   }
 }
 
-export async function updateProjectByID(id: string, data: any) {
+export async function updateProjectBySlug(slug: string, data: any) {
   try {
-    const project = await prisma.project.update({ where: { id }, data });
+    const project = await prisma.project.update({ where: { slug }, data });
     return { project };
   } catch (error: any) {
     console.error("Error updating project. Message: " + error.message);

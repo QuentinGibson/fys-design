@@ -1,0 +1,30 @@
+ .ql-snow .ql-stroke {
+   stroke: white
+ }
+
+ .ql-picker-options .ql-stroke {
+   stroke: black
+ }
+
+ .ql-snow .ql-fill,
+ .ql-snow .ql-stroke.ql-fill {
+   stroke: white !important
+ }
+
+ .ql-snow .ql-picker.ql-size .ql-picker-label:before,
+ .ql-snow .ql-picker.ql-size .ql-picker-item:before {
+   color: white;
+ }
+
+ .ql-snow .ql-picker.ql-header .ql-picker-label:before,
+ .ql-snow .ql-picker.ql-header .ql-picker-item:before {
+   color: white
+ }
+
+ .ql-snow .ql-picker.ql-size .ql-picker-item:before {
+   color: black
+ }
+
+ .ql-snow .ql-picker.ql-header .ql-picker-item:before {
+   color: black
+ }

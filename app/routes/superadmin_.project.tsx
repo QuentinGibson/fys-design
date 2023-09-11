@@ -6,6 +6,15 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const projects = await getProjects()
   return json(projects)
 };
+
+export function meta({ matches }: { matches: any }) {
+  const rootMeta = matches[0].meta;
+  const title = rootMeta.find((m: any) => m.title)
+  return [
+    { title: title.title + " | Super Admin All Projects" }
+  ]
+}
+
 export default function SuperAdminProjectRoute() {
   const { projects } = useLoaderData<typeof loader>()
   return (

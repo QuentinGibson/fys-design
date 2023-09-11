@@ -55,7 +55,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
         </div>
       </div>
       <div>
-        {project.content}
+        <div className="max-w-lg mx-auto my-40" dangerouslySetInnerHTML={{ __html: project.content }}></div>
       </div>
       <div className="relative my-10 py-10">
         <Squiggle />
