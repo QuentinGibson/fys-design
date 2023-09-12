@@ -35,8 +35,13 @@ export const links: LinksFunction = () => [
 
 export const loader = async ({ request }: LoaderArgs) => {
   const session = await getSession(request);
-  const message = session.get("globalMessage");
-  return json({ user: await getUser(request), message },
+  const message: flashMessage = {
+    level: session.get("level"),
+    message: session.get("message")
+  }
+  return json({
+    user: await getUser(request), message
+  },
     {
       headers: {
         "Set-Cookie": await sessionStorage.commitSession(session),
@@ -60,13 +65,8 @@ function Body() {
         <Links />
       </head>
       <body className="h-full">
-        <Layout>
-          {message ? (
-            <div className={clsx("absolute px-4 py-2 font-bold bg-cream border dark:bg-slate-800 dark:border-slate-400 dark:text-slate-100 border-slate-400 flex justify-center", { "hidden": visible })}>
-              {/* @ts-ignore */}
-              <p>{message}</p>
-            </div>
-          ) : null}
+        <Layout message={message}>
+
           <Outlet />
         </Layout>
         <ScrollRestoration />

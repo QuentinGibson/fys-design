@@ -4,12 +4,14 @@ import { HiMenuAlt4, HiX } from "react-icons/hi";
 import { Theme, useTheme } from "~/utils/theme-provider";
 import { useMediaQuery } from "usehooks-ts";
 import { useOptionalUser } from "~/utils";
+import FlashMessage from "../routes/FlashMessage";
 
 interface LayoutProps {
+  message: flashMessage;
   children: ReactNode;
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default function Layout({ children, message }: LayoutProps) {
   const [theme, setTheme] = useTheme();
   const isDark = theme === Theme.DARK;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -149,6 +151,7 @@ export default function Layout({ children }: LayoutProps) {
             </nav>
           )}
       </header>
+      <FlashMessage message={message} />
       {children}
       <footer className="bg-primary px-12 py-8 font-sauce font-semibold">
         <div className="flex flex-col items-center justify-center gap-10 py-12 text-center text-base lg:flex-row">
@@ -177,7 +180,7 @@ export default function Layout({ children }: LayoutProps) {
 
           <div className="flex gap-2">
             {user && user.role === "ADMIN" && (
-              <Link className="hover:underline" to="admin">
+              <Link className="hover:underline" to="superadmin">
                 Admin
               </Link>
             )}

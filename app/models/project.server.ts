@@ -1,3 +1,4 @@
+import { Project } from "@prisma/client";
 import invariant from "tiny-invariant";
 import { prisma } from "~/db.server";
 
@@ -53,12 +54,13 @@ export async function getProjects() {
   }
 }
 
-export async function updateProjectBySlug(slug: string, data: any) {
+export async function updateProjectBySlug(slug: string, data: Partial<Project>) {
   try {
-    const project = await prisma.project.update({ where: { slug }, data });
-    return { project };
+    const project = await prisma.project.update({ where: { slug }, data })
+    return { project }
   } catch (error: any) {
-    console.error("Error updating project. Message: " + error.message);
+    console.error("Error updating project. Message: " + error.message)
+    throw error
   }
 }
 

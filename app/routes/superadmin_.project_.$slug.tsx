@@ -22,7 +22,11 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   if (user.role !== "ADMIN") {
     const session = await getSession(request)
     session.flash("error", "Must have premission to view this page.")
-    redirect("/", { headers: { "Set-Cookie": await sessionStorage.commitSession(session) } })
+    redirect("/", {
+      headers: {
+        "Set-Cookie": await sessionStorage.commitSession(session)
+      }
+    })
   }
   const slug = params.slug
   invariant(slug, "No slug found!")
@@ -62,10 +66,9 @@ export default function SuperAdminProjectSlugRoute() {
               <div className="grid grid-cols-2">
                 <div className="flex flex-col gap-4">
                   <label htmlFor="">
-                    <span className="text-lg">Name</span>
-
+                    <span className="text-lg">Name*</span>
                     <br />
-                    <input name="name" type="text" className="text-black" defaultValue={project.name} />
+                    <input name="name" type="text" className="text-black" defaultValue={project.name} required />
                   </label>
                 </div>
                 <div className="flex flex-col gap-4">
@@ -79,9 +82,9 @@ export default function SuperAdminProjectSlugRoute() {
               <div className="grid grid-cols-2">
                 <div className="flex flex-col gap-4">
                   <label htmlFor="">
-                    <span className="text-lg">Slug</span>
+                    <span className="text-lg">Slug*</span>
                     <br />
-                    <input name="slug" type="text" className="text-black" defaultValue={project.slug} />
+                    <input name="slug" type="text" className="text-black" defaultValue={project.slug} required />
                   </label>
                 </div>
               </div>
@@ -90,8 +93,8 @@ export default function SuperAdminProjectSlugRoute() {
                 <input name="image" id="image" type="file" accept="image/*" />
               </div>
               <div className="grid gap-y-4">
-                <label htmlFor="summary">Summary</label>
-                <textarea name="summary" id="summary" className="h-40 text-black" defaultValue={project.summary} />
+                <label htmlFor="summary">Summary*</label>
+                <textarea name="sumamry" id="summary" className="h-40 text-black" defaultValue={project.summary} required />
               </div>
               <div className="flex">
                 <div>
@@ -114,8 +117,9 @@ export default function SuperAdminProjectSlugRoute() {
 
 export const action = async ({ request, params }: DataFunctionArgs) => {
   const user = await requireUser(request)
+  const session = await getSession(request)
+
   if (user.role !== "ADMIN") {
-    const session = await getSession(request)
     session.flash("error", "No premission to complete that action")
     redirect("/")
   }
@@ -146,21 +150,33 @@ export const action = async ({ request, params }: DataFunctionArgs) => {
   const slug = formData.get("slug") as string
   const summary = formData.get("summary") as string
   const content = formData.get("content") as string
-  const session = await getSession(request)
 
-  await updateProjectBySlug(slug, {
+  return await updateProjectBySlug(slug, {
     image: url,
     name,
     slug,
     content,
     summary,
     link
-  }).catch(async (error) => {
-    session.flash("error", "Project failed to save!")
-    console.error(error)
-    redirect(`/superadmin/project/${slug}`)
   })
+    .then(async () => {
+      session.flash("level", "SUCCESS")
+      session.flash("message", "Post updated sucessfully!")
+      return redirect(`/superadmin/project/`, {
+        headers: {
+          "Set-Cookie": await sessionStorage.commitSession(session)
+        }
+      })
+    })
+    .catch(async (error) => {
+      console.log(`Error RAN!`)
+      session.flash("level", "ERROR")
+      session.flash("message", "Project failed to save!")
+      return redirect(`/superadmin/project/${slug}`, {
+        headers: {
+          "Set-Cookie": await sessionStorage.commitSession(session)
+        }
+      })
+    })
 
-  session.flash("sucess", "Post updated sucessfully!")
-  return redirect(`/superadmin/project/${slug}`, { headers: { "Set-Cookie": await sessionStorage.commitSession(session) } })
 };
