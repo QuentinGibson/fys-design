@@ -1,12 +1,11 @@
-import { ActionArgs, DataFunctionArgs, LoaderArgs, json, redirect, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
-import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
-import invariant from "tiny-invariant";
-import { getProjectBySlug, updateProjectBySlug } from "~/models/project.server";
+import { ActionArgs, json, redirect, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
+import { Form } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import { useQuill } from "react-quilljs";
 import draftCSS from "quill/dist/quill.snow.css"
 import editorStyles from "~/editor.css"
-import { useEffect, useState } from "react";
-import { getSession, requireUser, sessionStorage } from "~/session.server";
+import { getSession, requireUser } from "~/session.server";
+import { createProject } from "~/models/project.server";
 
 export const links = () => [{ rel: "stylesheet", href: draftCSS }, { rel: "stylesheet", href: editorStyles }];
 
@@ -14,10 +13,9 @@ export function meta({ matches }: { matches: any }) {
   const rootMeta = matches[0].meta;
   const title = rootMeta.find((m: any) => m.title)
   return [
-    { title: title.title + " | Edit Project" }
+    { title: title.title + " | Create Project" }
   ]
 }
-
 export const action = async ({ request, params }: ActionArgs) => {
   const user = await requireUser(request)
   const session = await getSession(request)
@@ -54,7 +52,7 @@ export const action = async ({ request, params }: ActionArgs) => {
   const summary = formData.get("summary") as string
   const content = formData.get("content") as string
 
-  return await updateProjectBySlug(slug, {
+  return await createProject({
     image: url,
     name,
     slug,
@@ -85,28 +83,7 @@ export const action = async ({ request, params }: ActionArgs) => {
 
 };
 
-export const loader = async ({ request, params }: LoaderArgs) => {
-  const user = await requireUser(request)
-  if (user.role !== "ADMIN") {
-    const session = await getSession(request)
-    session.flash("level", "ERROR")
-    session.flash("message", "Must have premission to view this page.")
-    redirect("/", {
-      headers: {
-        "Set-Cookie": await sessionStorage.commitSession(session)
-      }
-    })
-  }
-  const slug = params.slug
-  invariant(slug, "No slug found!")
-  const project = getProjectBySlug(slug)
-  invariant(project, "No project found!")
-  return project
-}
-
-
-export default function SuperAdminProjectSlugRoute() {
-  const { project } = useLoaderData<typeof loader>()
+export default function SuperAdminProjectCreateRoute() {
   const { quill, quillRef } = useQuill();
   const [content, setContent] = useState<string>("")
   useEffect(() => {
@@ -116,21 +93,16 @@ export default function SuperAdminProjectSlugRoute() {
   }, [quill])
 
   useEffect(() => {
-    quill?.clipboard.dangerouslyPasteHTML(0, project.content);
+    quill?.clipboard.dangerouslyPasteHTML(0, content);
 
   }, [quill])
-
   return (
     <main>
       <div className="flex justify-center font-body text-4xl md:text-6xl py-20">
-        <h1>Edit Project {project.name}</h1>
+        <h1>Create Project</h1>
       </div>
       <div>
         <div className="max-w-xl mx-auto">
-          <div className="flex gap-4">
-            <Link className="p-3 bg-emerald-600" to={`/portfolio/${project.slug}`}>View Page</Link>
-            <Link className="p-3 bg-red-600" to={`/api/deleteProject/${project.slug}`}>Delete Project</Link>
-          </div>
           <Form method="POST" encType="multipart/form-data">
             <div className="flex flex-col gap-8">
               <div className="grid grid-cols-2">
@@ -138,14 +110,14 @@ export default function SuperAdminProjectSlugRoute() {
                   <label htmlFor="">
                     <span className="text-lg">Name*</span>
                     <br />
-                    <input name="name" type="text" className="text-black" defaultValue={project.name} required />
+                    <input name="name" type="text" className="text-black" required />
                   </label>
                 </div>
                 <div className="flex flex-col gap-4">
                   <label htmlFor="">
                     <span className="text-lg">Link</span>
                     <br />
-                    <input name="link" type="text" className="text-black" defaultValue={project.link || ""} />
+                    <input name="link" type="text" className="text-black" />
                   </label>
                 </div>
               </div>
@@ -154,7 +126,7 @@ export default function SuperAdminProjectSlugRoute() {
                   <label htmlFor="">
                     <span className="text-lg">Slug*</span>
                     <br />
-                    <input name="slug" type="text" className="text-black" defaultValue={project.slug} required />
+                    <input name="slug" type="text" className="text-black" required />
                   </label>
                 </div>
               </div>
@@ -164,7 +136,7 @@ export default function SuperAdminProjectSlugRoute() {
               </div>
               <div className="grid gap-y-4">
                 <label htmlFor="summary">Summary*</label>
-                <textarea name="summary" id="summary" className="h-40 text-black" defaultValue={project.summary} required />
+                <textarea name="summary" id="summary" className="h-40 text-black" required />
               </div>
               <div className="flex">
                 <div>
@@ -180,7 +152,7 @@ export default function SuperAdminProjectSlugRoute() {
             </div>
           </Form>
         </div>
-      </div >
-    </main >
+      </div>
+    </main>
   );
 };

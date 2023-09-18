@@ -34,8 +34,8 @@ export default function SuperAdminRoute() {
           </Form>
         </div>
       </div>
-      <div className="max-w-2xl mx-auto">
-        <div className="grid gap-x-9 grid-flow-col">
+      <div className="max-w-4xl mx-auto">
+        <div className="grid gap-9 md:grid-flow-col">
           <div className="flex flex-col gap-3">
             <p className="font-body text-2xl underline underline-offset-4">Portfolio</p>
             <div className="flex flex-col gap-2">
@@ -51,7 +51,7 @@ export default function SuperAdminRoute() {
             </div>
           </div>
           <div className="flex flex-col gap-3">
-            <p className="font-body text-2xl underline underline-offset-4">Case Study</p>
+            <p className="font-body text-2xl underline underline-offset-4">Case Studies</p>
             <div className="flex flex-col gap-2">
               <Link className="hover:underline" to="/superadmin/case/create">Create Case</Link>
               <Link className="hover:underline" to="/superadmin/case/">View Case</Link>
