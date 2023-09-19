@@ -50,6 +50,9 @@ export async function requireUserId(
   const userId = await getUserId(request);
   if (!userId) {
     const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
+    const session = await getSession(request)
+    session.flash("message", "There was an unknown issue.")
+    session.flash("level", "ERROR")
     throw redirect(`/?${searchParams}`);
   }
   return userId;
