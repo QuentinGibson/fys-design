@@ -42,6 +42,7 @@ export async function getUser(request: Request) {
   throw await logout(request);
 }
 
+
 export async function requireUserId(
   request: Request,
   redirectTo: string = new URL(request.url).pathname,
@@ -49,13 +50,13 @@ export async function requireUserId(
   const userId = await getUserId(request);
   if (!userId) {
     const searchParams = new URLSearchParams([["redirectTo", redirectTo]]);
-    throw redirect(`/login?${searchParams}`);
+    throw redirect(`/?${searchParams}`);
   }
   return userId;
 }
 
 export async function requireUser(request: Request) {
-  const userId = await requireUserId(request);
+  const userId = await requireUserId(request, "/");
 
   const user = await getUserById(userId);
   if (user) return user;

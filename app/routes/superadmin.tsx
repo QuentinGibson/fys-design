@@ -7,8 +7,9 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const user = await requireUser(request)
   if (user.role !== "ADMIN") {
     const session = await getSession(request)
-    session.flash("auth", "Please log in before going to this page.")
-    redirect("/")
+    session.flash("message", "Please log in before going to this page.")
+    session.flash("level", "ERROR")
+    return redirect("/login")
   }
   return null
 };
