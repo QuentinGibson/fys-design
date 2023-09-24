@@ -9,7 +9,8 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const slug = params.slug
   invariant(slug, "No slug found!")
   const project = await getProjectBySlug(slug)
-  return project
+  invariant(project, "No project found!")
+  return { project }
 };
 ; export default function ProjectSlugRoute() {
   const { project } = useLoaderData<typeof loader>()

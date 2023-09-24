@@ -99,9 +99,9 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   }
   const slug = params.slug
   invariant(slug, "No slug found!")
-  const project = getProjectBySlug(slug)
+  const project = await getProjectBySlug(slug)
   invariant(project, "No project found!")
-  return project
+  return { project }
 }
 
 
@@ -129,7 +129,17 @@ export default function SuperAdminProjectSlugRoute() {
         <div className="max-w-xl mx-auto">
           <div className="flex gap-4">
             <Link className="p-3 bg-emerald-600" to={`/portfolio/${project.slug}`}>View Page</Link>
-            <Link className="p-3 bg-red-600" to={`/api/deleteProject/${project.slug}`}>Delete Project</Link>
+            <Form
+              action={`/api/deleteProject/${project.slug}`}
+              method="GET"
+            >
+              <button
+                className="p-3 bg-red-600"
+                type="submit"
+              >
+                Delete Project
+              </button>
+            </Form>
           </div>
           <Form method="POST" encType="multipart/form-data">
             <div className="flex flex-col gap-8">

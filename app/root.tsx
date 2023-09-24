@@ -17,7 +17,7 @@ import {
 import { getUser, getSession, sessionStorage } from "~/session.server";
 import stylesheet from "~/tailwind.css";
 import themeStylesheet from "~/theme.css";
-import { ThemeProvider, useTheme } from "./utils/theme-provider";
+import { Theme, ThemeProvider, useTheme } from "./utils/theme-provider";
 import Layout from "./components/Layout";
 import { useEffect, useState } from "react";
 
@@ -82,36 +82,5 @@ export default function App() {
     <ThemeProvider>
       <Body />
     </ThemeProvider>
-  )
-}
-
-export function ErrorBoundary() {
-  const error = useRouteError()
-  if (isRouteErrorResponse(error)) {
-    return (
-      <main>
-        <h1>We're sorry, theres a huge error</h1>
-        <div>
-          <p>Status: {error.status}</p>
-          <p>{error.statusText}</p>
-        </div>
-        <div>
-          <p>{error.data.message}</p>
-        </div>
-      </main>
-    )
-  }
-
-  let errorMessage = "Unknown Error"
-  return (
-    <main>
-      <h1>We're sorry, theres a huge error</h1>
-      <p>{errorMessage}</p>
-      {/*@ts-ignore*/}
-      {error.message &&
-        /*@ts-ignore*/
-        <p>{error.message}</p>
-      }
-    </main>
   )
 }

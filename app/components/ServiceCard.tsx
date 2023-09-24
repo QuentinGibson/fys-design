@@ -1,16 +1,18 @@
 import type { CustomService } from "~/models/service.server";
 import { BsCheckLg, BsChevronRight } from "react-icons/bs";
+import { Service } from "@prisma/client";
+import { Link } from "@remix-run/react";
 
 export default function ServiceCard({
   service,
   flipped = true,
 }: {
-  service: CustomService;
+  service: any;
   flipped: Boolean;
 }) {
   return (
-    <article className="mb-20 xl:mx-auto xl:w-3/4 xl:max-w-screen-xl">
-      <div className="mx-auto grid max-w-lg gap-x-4 gap-y-20 xl:m-0 xl:max-w-none xl:grid-cols-2">
+    <article className="mb-20 lg:mx-auto lg:w-3/4 lg:max-w-screen-xl">
+      <div className="mx-auto grid max-w-lg gap-x-4 gap-y-20 lg:m-0 lg:max-w-none xl:grid-cols-2">
         <div className="col-span-1">
           <div className="h-full border-[0.8px] border-white/25">
             <div className="border-b-[0.8px] border-white/25 p-7">
@@ -20,7 +22,7 @@ export default function ServiceCard({
               <p>{service.description}</p>
               <div className="py-7">
                 <ul className="">
-                  {service.perks.map((service, index) => {
+                  {service.perks.map((service: any, index: number) => {
                     return (
                       <li key={index} className="inline-block">
                         <div className="mb-3 mr-1 flex items-center gap-4 rounded-full bg-white px-4 py-3 text-primary">
@@ -32,7 +34,7 @@ export default function ServiceCard({
                   })}
                 </ul>
                 <div className="mt-6 flex items-baseline font-bold">
-                  <p className="text-xl">Enquire Now </p>
+                  <Link to={"/contact"} className="text-xl">Enquire Now </Link>
                   <BsChevronRight className="text-sm font-bold" />
                 </div>
               </div>
@@ -40,9 +42,8 @@ export default function ServiceCard({
           </div>
         </div>
         <div
-          className={`col-span-1 mx-auto flex max-w-md ${
-            flipped ? "-order-1" : ""
-          }`}
+          className={`col-span-1 mx-auto flex max-w-md ${flipped ? "-order-1" : ""
+            }`}
         >
           <img
             className="max-w-full rounded-t-full"

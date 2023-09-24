@@ -1,5 +1,5 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { Link, isRouteErrorResponse, useLoaderData, useRouteError } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import ContactForm from "~/components/ContactForm";
 import OrangeSquiggle from "~/components/OrangeSquiggle";
@@ -14,6 +14,7 @@ export const meta: V2_MetaFunction = () => [{ title: "FYS Design" }];
 export const loader = async ({ request, params }: LoaderArgs) => {
   const projects = await getLatestProjects()
   invariant(projects, "No projects found in latest projects")
+
   return { projects }
 };
 
@@ -101,4 +102,40 @@ export default function Index() {
       </section>
     </main>
   );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError()
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <main className="bg">
+        <h1>We're sorry, theres a huge error</h1>
+        <div>
+          <p>Status: {error.status}</p>
+          <p>{error.statusText}</p>
+        </div>
+        <div>
+          <p>{error.data.message}</p>
+        </div>
+      </main>
+    )
+  }
+
+  let errorMessage = "Unknown Error"
+  return (
+    <main className="light">
+      <div className="flex justify-center items-center flex-col gap-4 min-h-[60vh] pl-10">
+        <h1 className="text-4xl font-normal">We're sorry, theres a huge error</h1>
+        {/*@ts-ignore*/}
+        {error.message &&
+          /*@ts-ignore*/
+          <p>{error.message}</p>
+        }
+        <div className="flex">
+          <Link to={"/"} className="bg-gray-900 flex px-3 py-2 hover:underline">Return Home</Link>
+        </div>
+      </div>
+    </main>
+  )
 }

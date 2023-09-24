@@ -1,5 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
-import { defer } from "@remix-run/node";
+import { defer, json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import ContactForm from "~/components/ContactForm";
 import invariant from "tiny-invariant";
@@ -10,7 +10,7 @@ import { getServicesAndPerks } from "~/models/service.server";
 export const loader = async ({ request, params }: LoaderArgs) => {
   const allServices = await getServicesAndPerks();
   invariant(allServices, "No services found!");
-  return defer({
+  return json({
     allServices,
   });
 };
