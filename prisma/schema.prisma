@@ -104,7 +104,8 @@ model Service {
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now())
 
-  perks Perk[]
+  perks       Perk[]
+  submissions ContactFormSubmission[]
 }
 
 model Perk {
@@ -114,4 +115,14 @@ model Perk {
   serviceId  String?
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
+}
+
+model ContactFormSubmission {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String
+  message   String
+  service   Service? @relation(fields: [serviceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  serviceId String?
 }

@@ -1,4 +1,4 @@
-import { ActionArgs, LoaderArgs, json, redirect, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
+import { ActionArgs, DataFunctionArgs, LoaderArgs, json, redirect, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
 import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { getProjectBySlug, updateProjectBySlug } from "~/models/project.server";
@@ -7,7 +7,6 @@ import draftCSS from "quill/dist/quill.snow.css"
 import editorStyles from "~/editor.css"
 import { useEffect, useState } from "react";
 import { getSession, requireUser, sessionStorage } from "~/session.server";
-import clsx from "clsx";
 
 export const links = () => [{ rel: "stylesheet", href: draftCSS }, { rel: "stylesheet", href: editorStyles }];
 
@@ -22,13 +21,9 @@ export function meta({ matches }: { matches: any }) {
 export const action = async ({ request, params }: ActionArgs) => {
   const user = await requireUser(request)
   const session = await getSession(request)
-  const inputSlug = params.slug
-
-  invariant(inputSlug, "No slug found!")
 
   if (user.role !== "ADMIN") {
-    session.flash("message", "No premission to complete that action")
-    session.flash("level", "ERROR")
+    session.flash("error", "No premission to complete that action")
     redirect("/")
   }
 
@@ -59,20 +54,34 @@ export const action = async ({ request, params }: ActionArgs) => {
   const summary = formData.get("summary") as string
   const content = formData.get("content") as string
 
-  const inputData = { name, link, slug, summary, image: url, content }
-  const [errors, project] = await updateProjectBySlug(inputSlug, inputData)
-  console.log("Error from update")
-  console.table(errors)
-  console.log("--------------------------")
-  console.log("Project from update")
-  console.table(project)
-  console.log("--------------------------")
-  console.log()
-  if (errors) {
-    const values = Object.fromEntries(formData)
-    return json({ errors, values })
-  }
-  return redirect(`/superadmin/project`)
+  return await updateProjectBySlug(slug, {
+    image: url,
+    name,
+    slug,
+    content,
+    summary,
+    link
+  })
+    .then(async () => {
+      session.flash("level", "SUCCESS")
+      session.flash("message", "Post updated sucessfully!")
+      return redirect(`/superadmin/project/`, {
+        headers: {
+          "Set-Cookie": await sessionStorage.commitSession(session)
+        }
+      })
+    })
+    .catch(async () => {
+      console.log(`Error RAN!`)
+      session.flash("level", "ERROR")
+      session.flash("message", "Project failed to save!")
+      return json({}, {
+        headers: {
+          "Set-Cookie": await sessionStorage.commitSession(session)
+        },
+        status: 400
+      })
+    })
 
 };
 
@@ -99,7 +108,6 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export default function SuperAdminProjectSlugRoute() {
   const { project } = useLoaderData<typeof loader>()
   const { quill, quillRef } = useQuill();
-  const actionData = useActionData<typeof action>()
   const [content, setContent] = useState<string>("")
   useEffect(() => {
     quill?.on('text-change', () => {
@@ -120,13 +128,7 @@ export default function SuperAdminProjectSlugRoute() {
       <div>
         <div className="max-w-xl mx-auto">
           <div className="flex gap-4">
-            <Link
-              className="p-3
-               bg-emerald-600"
-              to={`/portfolio/${project.slug}`}
-            >
-              View Page
-            </Link>
+            <Link className="p-3 bg-emerald-600" to={`/portfolio/${project.slug}`}>View Page</Link>
             <Form
               action={`/api/deleteProject/${project.slug}`}
               method="GET"
@@ -146,54 +148,15 @@ export default function SuperAdminProjectSlugRoute() {
                   <label htmlFor="">
                     <span className="text-lg">Name*</span>
                     <br />
-                    <input
-                      name="name"
-                      type="text"
-                      className={clsx(
-                        "text-black",
-                        actionData?.errors.name &&
-                        "border-2 border-red-500"
-                      )}
-                      defaultValue={
-                        actionData?.values.name ||
-                        project.name
-                      }
-                      required
-                    />
+                    <input name="name" type="text" className="text-black" defaultValue={project.name} required />
                   </label>
-                  {
-                    actionData?.errors.name &&
-                    <p className="text-red-500">
-                      {actionData?.errors.name}
-                    </p>
-                  }
                 </div>
                 <div className="flex flex-col gap-4">
                   <label htmlFor="">
                     <span className="text-lg">Link</span>
                     <br />
-                    <input
-                      name="link"
-                      type="text"
-                      className={clsx(
-                        "text-black",
-                        actionData?.errors.link &&
-                        "border-2 border-red-500"
-                      )}
-                      defaultValue={
-                        actionData?.values.link ||
-                        project.link ||
-                        ""
-                      }
-                    />
+                    <input name="link" type="text" className="text-black" defaultValue={project.link || ""} />
                   </label>
-                  {
-                    actionData?.errors.link &&
-                    <p className="text-red-500">
-                      {actionData?.errors.link}
-                    </p>
-                  }
-
                 </div>
               </div>
               <div className="grid grid-cols-2">
@@ -201,88 +164,28 @@ export default function SuperAdminProjectSlugRoute() {
                   <label htmlFor="">
                     <span className="text-lg">Slug*</span>
                     <br />
-                    <input
-                      name="slug"
-                      type="text"
-                      className={clsx(
-                        "text-black",
-                        actionData?.errors.name &&
-                        "border-2 border-red-500"
-                      )}
-                      defaultValue={
-                        actionData?.values.slug ||
-                        project.slug
-                      }
-                      required />
+                    <input name="slug" type="text" className="text-black" defaultValue={project.slug} required />
                   </label>
-                  {
-                    actionData?.errors.slug &&
-                    <p className="text-red-500">
-                      {actionData?.errors.slug}
-                    </p>
-                  }
-
                 </div>
               </div>
               <div className="grid">
                 <label htmlFor="image">Image</label>
-                <input name="image"
-                  id="image"
-                  type="file"
-                  accept="image/*"
-                />
+                <input name="image" id="image" type="file" accept="image/*" />
               </div>
               <div className="grid gap-y-4">
                 <label htmlFor="summary">Summary*</label>
-                <textarea
-                  name="summary"
-                  id="summary"
-                  className={clsx(
-                    "h-40 text-black",
-                    actionData?.errors.summary &&
-                    "border-2 border-red-500"
-                  )}
-                  defaultValue={
-                    actionData?.values.summary ||
-                    project.summary
-                  }
-                  required
-                />
-                {
-                  actionData?.errors.summary &&
-                  <p className="text-red-500">
-                    {actionData?.errors.summary}
-                  </p>
-                }
-
+                <textarea name="summary" id="summary" className="h-40 text-black" defaultValue={project.summary} required />
               </div>
               <div className="flex">
                 <div>
                   <div className="h-[1000px] w-full mb-20">
-
-                    {
-                      actionData?.errors.content &&
-                      <p className="text-red-500">
-                        {actionData?.errors.content}
-                      </p>
-                    }
-
                     <div ref={quillRef} />
-                    <input
-                      type="hidden"
-                      name="content"
-                      value={content}
-                    />
+                    <input type="hidden" name="content" value={content} />
                   </div>
                 </div>
               </div>
               <div>
-                <button
-                  className="bg-black py-3 px-4"
-                  type="submit"
-                >
-                  Save Project
-                </button>
+                <button className="bg-black py-3 px-4" type="submit">Save Project</button>
               </div>
             </div>
           </Form>

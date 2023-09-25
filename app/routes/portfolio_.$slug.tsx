@@ -1,7 +1,7 @@
 import { LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import ContactForm from "~/components/ContactForm";
+import ContactForm from "../components/ContactForm";
 import Squiggle from "~/components/Squiggle";
 import { getProjectBySlug } from "~/models/project.server";
 

@@ -1,26 +1,27 @@
 import type { LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { Link, isRouteErrorResponse, useLoaderData, useRouteError } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import ContactForm from "~/components/ContactForm";
+import ContactForm from "../components/ContactForm";
 import OrangeSquiggle from "~/components/OrangeSquiggle";
 import OrangeSquiggleAlt from "~/components/OrangeSquiggleAlt";
 import Squiggle from "~/components/Squiggle";
 import { getLatestProjects } from "~/models/project.server";
 
-import { useOptionalUser } from "~/utils";
+import { getServices } from "~/models/service.server";
+import { Service } from "@prisma/client";
 
 export const meta: V2_MetaFunction = () => [{ title: "FYS Design" }];
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderArgs) => {
   const projects = await getLatestProjects()
-  invariant(projects, "No projects found in latest projects")
+  const services: Service[] = await getServices()
+  invariant(projects, "No projects found in latest projects!")
 
-  return { projects }
+  return { projects, services }
 };
 
 export default function Index() {
-  const { projects } = useLoaderData<typeof loader>()
-  const user = useOptionalUser();
+  const { projects, services } = useLoaderData<typeof loader>()
   return (
     <main>
       <section className="relative py-32">
@@ -89,7 +90,7 @@ export default function Index() {
           <div className="flex flex-col justify-center w-full text-center">
             <h1 className="text-5xl font-body text-[45px]">Client Testimonials</h1>
             <p className="py-6">Kind words from some of our favorite clients.</p>
-            <button className="bg-white text-lg text-primary px-8 py-3 font-display tracking-[1.8px]">View More</button>
+            <Link to="/testimonials" className="bg-white text-lg text-primary px-8 py-3 font-display tracking-[1.8px]">View More</Link>
           </div>
           <div>
           </div>
@@ -98,7 +99,7 @@ export default function Index() {
       </section>
       <section className="py-24 relative">
         <Squiggle />
-        <ContactForm />
+        <ContactForm services={services} />
       </section>
     </main>
   );

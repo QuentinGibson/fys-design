@@ -143,14 +143,48 @@ export async function getProjects() {
   }
 }
 
-export async function updateProjectBySlug(slug: string, data: Partial<Project>) {
-  try {
-    const project = await prisma.project.update({ where: { slug }, data })
-    return { project }
-  } catch (error: any) {
-    console.error("Error updating project. Message: " + error.message)
-    throw error
+export async function updateProjectBySlug(
+  inputSlug: string, data: Partial<Project>
+) {
+  let errors: InputError | null = {}
+
+  // Validate Input Data
+  let {name, link, slug , summary, content, image} = data
+  if (name && !validateName(name)) {
+    errors.name = "Invalid Name. Please enter a different name!"
   }
+  if (link && !isValidURL(link)) {
+    errors.link = "Invalid Link. Please enter a valid link!"
+  }
+  if (slug && !isValidSlug(slug)) {
+    errors.slug = "Invalid Slug. Please remove invalid characters!"
+  }
+  if (summary && !isValidSummary(summary)) {
+    errors.summary = "Invalid Summary. Summary must be less than 200 characters!"
+  }
+
+  if (content && !isValidContent(content)) {
+    errors.content =  "Invalid Content. Please try again!"
+  }
+
+  if (image && !isValidImageFileName(image)) {
+    errors.image = "Error, Please enter a valid image file."
+  }
+
+  if (image === "") {
+    image = undefined
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return [errors, null]
+  }
+
+  // Call create Project
+  const project = await prisma.project.update({ where: { slug: inputSlug }, data: data })
+    .catch(error => {
+      console.log(`Project update error: ${error}`)
+    });
+  return [null, project];
 }
 
 export async function deleteProjectBySlug(slug: string):

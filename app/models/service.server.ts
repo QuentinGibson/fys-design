@@ -38,12 +38,8 @@ export async function getServicesAndPerks() {
 }
 
 export async function getServices() {
-  try {
-    const services = await prisma.service.findMany();
-    return { services };
-  } catch (error: any) {
-    console.error("Error getting all services. Message: " + error.message);
-  }
+  const services: Service[] = await prisma.service.findMany();
+  return services;
 }
 
 export async function updateService(id: string, data: any) {

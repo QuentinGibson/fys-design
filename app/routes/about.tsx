@@ -1,5 +1,5 @@
 import { Link } from "@remix-run/react";
-import ContactForm from "~/components/ContactForm";
+import ContactForm from "../components/ContactForm";
 import OrangeSquiggle from "~/components/OrangeSquiggle";
 import Squiggle from "~/components/Squiggle";
 

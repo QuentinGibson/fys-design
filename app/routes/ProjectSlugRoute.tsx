@@ -1,5 +1,5 @@
 import { useLoaderData } from "@remix-run/react";
-import ContactForm from "~/components/ContactForm";
+import ContactForm from "../components/ContactForm";
 import Squiggle from "~/components/Squiggle";
 import { loader } from "./portfolio_.$slug";
 

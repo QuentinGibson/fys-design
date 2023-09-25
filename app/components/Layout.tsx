@@ -151,7 +151,9 @@ export default function Layout({ children, message }: LayoutProps) {
             </nav>
           )}
       </header>
-      <FlashMessage message={message} />
+      <div className="relative h-0">
+        <FlashMessage message={message} />
+      </div>
       {children}
       <footer className="bg-primary px-12 py-8 font-sauce font-semibold">
         <div className="flex flex-col items-center justify-center gap-10 py-12 text-center text-base lg:flex-row">
@@ -177,7 +179,6 @@ export default function Layout({ children, message }: LayoutProps) {
               </li>
             </ul>
           </div>
-
           <div className="flex gap-2">
             {user && user.role === "ADMIN" && (
               <Link className="hover:underline" to="superadmin">
