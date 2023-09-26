@@ -2,13 +2,6 @@ import { Prisma, Project } from "@prisma/client";
 import invariant from "tiny-invariant";
 import { prisma } from "~/db.server";
 import { validateName } from "~/utils";
- {
-
-  }
-interface InputError {
-  [key: string]: string
-  
-}
 
 function isValidURL(url: string): boolean {
   const urlPattern = /^(http|https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
@@ -143,9 +136,7 @@ export async function getProjects() {
   }
 }
 
-export async function updateProjectBySlug(
-  inputSlug: string, data: Partial<Project>
-) {
+export async function updateProjectBySlug( inputSlug: string, data: Partial<Project>) {
   let errors: InputError | null = {}
 
   // Validate Input Data

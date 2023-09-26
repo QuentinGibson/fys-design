@@ -1,5 +1,6 @@
 import { prisma } from "~/db.server";
 import type { Service, Perk } from "@prisma/client";
+import { validateName } from "~/utils";
 
 type CustomPerk = Omit<Perk, "created_at"> & { created_at: string };
 
@@ -7,20 +8,71 @@ export type CustomService = Omit<Service, "created_at"> & {
   created_at: string;
   perks: CustomPerk[];
 };
+function isValidImageFileName(fileName: string): boolean {
+  // Define a list of allowed image file extensions (add more as needed)
+  const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp'];
+
+  // Get the file extension from the fileName
+  const fileExtension = fileName.toLowerCase().slice((fileName.lastIndexOf(".") - 1 >>> 0) + 2);
+
+  // Check if the file extension is in the list of allowed extensions
+  return allowedExtensions.includes(`.${fileExtension}`);
+}
+
+function isValidDescription(description: string, maxLength: number = 400): boolean {
+  // Check if the summary is a non-empty string
+  if (typeof description !== "string" || description.trim().length === 0) {
+    return false;
+  }
+
+  // Check if the summary length is within the specified limit
+  if (description.length > maxLength) {
+    return false;
+  }
+
+  // If all checks pass, the summary is considered valid
+  return true;
+}
 
 export async function createService(data: any) {
-  try {
-    const service = await prisma.service.create(data);
-    return { service };
-  } catch (error: any) {
-    console.error("Error creating service. Message: " + error.message);
+  let errors: InputError | null = {}
+
+  // Validate Input Data
+  let { name, image, description } = data
+  if (name) {
+    if (!validateName(name)) {
+      errors.name = "Invalid Name. Please enter a different name!"
+    }
   }
+  console.log(`IMAGE: ${image}`)
+  if (image.name.length > 0) {
+    if (!isValidImageFileName(image)) {
+      errors.image = "Error, Please enter a valid image file."
+    }
+  }
+
+  if (description) {
+    if (!isValidDescription(description)) {
+      errors.description = "Invalid Description. Please enter at most 400 characters!"
+    }
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return [errors, null]
+  }
+
+  // Call create Project
+  const service = await prisma.service.create({ data: data })
+    .catch(error => {
+      console.log(`Service creation error: ${error}`)
+    });
+  return [null, service];
 }
 
 export async function getServiceByID(id: string) {
   try {
     const service = await prisma.service.findUnique({ where: { id } });
-    return { service };
+    return service;
   } catch (error: any) {
     console.error("Error finding service. Message: " + error.message);
   }
@@ -43,19 +95,39 @@ export async function getServices() {
 }
 
 export async function updateService(id: string, data: any) {
-  try {
-    const service = await prisma.service.update({ where: { id }, data });
-    return { service };
-  } catch (error: any) {
-    console.error("Error updating service. Message: " + error.message);
+  let errors: InputError | null = {}
+
+  // Validate Input Data
+  let { name, description, image } = data
+  if (name && !validateName(name)) {
+    errors.name = "Invalid Name. Please enter a different name!"
   }
+  if (description && !isValidDescription(description)) {
+    errors.description = "Invalid Description. Please enter a description within 200 characters!"
+  }
+  if (image.name.length > 0) {
+    if (!isValidImageFileName(image)) {
+      errors.image = "Error, Please enter a valid image file."
+    }
+  }
+
+  if (image === "") {
+    image = undefined
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return [errors, null]
+  }
+
+  // Call create Project
+  const service = await prisma.service.update({ where: { id }, data: data })
+    .catch(error => {
+      console.log(`Project update error: ${error}`)
+    });
+  return [null, service];
 }
 
 export async function deleteService(id: string) {
-  try {
-    const service = await prisma.service.delete({ where: { id } });
-    return { service };
-  } catch (error: any) {
-    console.error("Error deleting service. Message: " + error.message);
-  }
+  const service = await prisma.service.delete({ where: { id } });
+  return [null, service];
 }

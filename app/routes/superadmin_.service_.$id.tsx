@@ -1,31 +1,37 @@
-import { ActionArgs, json, redirect, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
-import { Form, useActionData, useNavigation } from "@remix-run/react";
-import { getSession, requireUser } from "~/session.server";
+
+import { ActionArgs, LoaderArgs, json, redirect, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
+import { Form, Link, useActionData, useLoaderData, useNavigate, useNavigation } from "@remix-run/react";
+import invariant from "tiny-invariant";
+import { getSession, requireUser, sessionStorage } from "~/session.server";
 import clsx from "clsx";
-import { createService } from "~/models/service.server";
+import { getServiceByID, updateService } from "~/models/service.server";
 
 
 export function meta({ matches }: { matches: any }) {
   const rootMeta = matches[0].meta;
   const title = rootMeta.find((m: any) => m.title)
   return [
-    { title: title.title + " | Create Service" }
+    { title: title.title + " | Edit Service" }
   ]
 }
-export const action = async ({ request }: ActionArgs) => {
+
+export const action = async ({ request, params }: ActionArgs) => {
   const user = await requireUser(request)
   const session = await getSession(request)
+  const inputId = params.id
+
+  invariant(inputId, "No slug found!")
 
   if (user.role !== "ADMIN") {
     session.flash("message", "No premission to complete that action")
-    session.flash("level", "Error")
+    session.flash("level", "ERROR")
     redirect("/")
   }
 
   const uploadHandler = unstable_composeUploadHandlers(
     unstable_createFileUploadHandler({
       maxPartSize: 10_000_000,
-      directory: "./public/uploads/projects",
+      directory: "./public/uploads/services",
       avoidFileConflicts: true,
       file: ({ filename }) => filename,
     }),
@@ -38,7 +44,7 @@ export const action = async ({ request }: ActionArgs) => {
   );
 
   const image = formData.get("image") as any || null
-  let url: string = ""
+  let url
   if (image.filepath) {
     const publicIndex = image.filepath.indexOf("uploads") - 1
     url = image.filepath.slice(publicIndex)
@@ -46,13 +52,12 @@ export const action = async ({ request }: ActionArgs) => {
   const name = formData.get("name") as string
   const description = formData.get("description") as string
 
-  const serializedData = { name, image: url, description }
-
-  const [errors, service] = await createService(serializedData)
-  console.log("Error from createService")
+  const inputData = { name, description, image }
+  const [errors, service] = await updateService(inputId, inputData)
+  console.log("Error from update")
   console.table(errors)
   console.log("--------------------------")
-  console.log("Service from createService")
+  console.log("Project from update")
   console.table(service)
   console.log("--------------------------")
   console.log()
@@ -64,21 +69,61 @@ export const action = async ({ request }: ActionArgs) => {
 
 };
 
-export default function SuperAdminProjectCreateRoute() {
-  const navigation = useNavigation()
-  const actionData = useActionData<typeof action>()
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const user = await requireUser(request)
+  if (user.role !== "ADMIN") {
+    const session = await getSession(request)
+    session.flash("level", "ERROR")
+    session.flash("message", "Must have premission to view this page.")
+    redirect("/", {
+      headers: {
+        "Set-Cookie": await sessionStorage.commitSession(session)
+      }
+    })
+  }
+  const id = params.id
+  invariant(id, "No id found!")
+  const service = await getServiceByID(id)
+  invariant(service, "No project found!")
+  return { service }
+}
 
+
+export default function SuperAdminProjectSlugRoute() {
+  const { service } = useLoaderData<typeof loader>()
+  const actionData = useActionData<typeof action>()
+  const navigation = useNavigation()
   return (
     <main>
       <div className="flex justify-center font-body text-4xl md:text-6xl py-20">
-        <h1>Create Project</h1>
+        <h1>Edit Service {service.name}</h1>
       </div>
       <div>
         <div className="max-w-xl mx-auto">
+          <div className="flex gap-4">
+            <Link
+              className="p-3
+               bg-emerald-600"
+              to={`/services`}
+            >
+              View Page
+            </Link>
+            <Form
+              action={`/api/deleteService/${service.id}`}
+              method="GET"
+            >
+              <button
+                className="p-3 bg-red-600"
+                type="submit"
+              >
+                Delete Service
+              </button>
+            </Form>
+          </div>
           <Form method="POST" encType="multipart/form-data">
             <fieldset disabled={navigation.state === "submitting"}>
               <div className="flex flex-col gap-8">
-                <div className="grid grid-cols-2">
+                <div className="grid">
                   <div className="flex flex-col gap-4">
                     <label htmlFor="">
                       <span className="text-lg">Name*</span>
@@ -88,9 +133,10 @@ export default function SuperAdminProjectCreateRoute() {
                         type="text"
                         className={clsx(
                           "text-black",
+                          "md:w-80",
                           actionData?.errors.name && "border-2 border-red-500"
                         )}
-                        defaultValue={actionData?.values.name}
+                        defaultValue={actionData?.values.name || service.name}
                         required />
                     </label>
                     {actionData?.errors.name &&
@@ -108,7 +154,9 @@ export default function SuperAdminProjectCreateRoute() {
                     name="description"
                     id="description"
                     className="h-40 text-black"
-                    required />
+                    defaultValue={actionData?.values.description || service.description}
+                    required
+                  />
                   {actionData?.errors.description &&
                     <p className="text-red-500">{actionData.errors.description}</p>
                   }
@@ -128,7 +176,7 @@ export default function SuperAdminProjectCreateRoute() {
             </fieldset>
           </Form>
         </div>
-      </div>
-    </main>
+      </div >
+    </main >
   );
 };
