@@ -1,8 +1,10 @@
-import { ActionArgs, json, redirect, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
-import { Form, useActionData, useNavigation } from "@remix-run/react";
+import { ActionArgs, LoaderArgs, json, redirect, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
+import { Form, useActionData, useLoaderData, useNavigation } from "@remix-run/react";
 import { getSession, requireUser } from "~/session.server";
 import clsx from "clsx";
 import { createService } from "~/models/service.server";
+import { getPerks } from "~/models/perk.server";
+import invariant from "tiny-invariant";
 
 
 export function meta({ matches }: { matches: any }) {
@@ -64,9 +66,22 @@ export const action = async ({ request }: ActionArgs) => {
 
 };
 
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const perks = await getPerks()
+  return { perks }
+};
+
 export default function SuperAdminProjectCreateRoute() {
   const navigation = useNavigation()
   const actionData = useActionData<typeof action>()
+  const { perks } = useLoaderData<typeof loader>()
+  const perkOptions = perks.map(perk => ({ label: perk.name, value: perk.id }))
+  const options = [
+    { label: "test1", value: "test1" },
+    { label: "test2", value: "test2" },
+    { label: "test3", value: "test3" },
+    { label: "test4", value: "test4" }
+  ]
 
   return (
     <main>
@@ -101,6 +116,13 @@ export default function SuperAdminProjectCreateRoute() {
                 <div className="grid">
                   <label htmlFor="image">Image</label>
                   <input name="image" id="image" type="file" accept="image/*" />
+                </div>
+                <div className="grid gap-y-4">
+                  <label htmlFor="description">Perks</label>
+
+                  {actionData?.errors.description &&
+                    <p className="text-red-500">{actionData.errors.description}</p>
+                  }
                 </div>
                 <div className="grid gap-y-4">
                   <label htmlFor="description">Description</label>

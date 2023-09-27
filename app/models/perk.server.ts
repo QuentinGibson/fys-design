@@ -19,12 +19,8 @@ export async function getPerkByID(id: string) {
 }
 
 export async function getPerks() {
-  try {
-    const perks = await prisma.perk.findMany();
-    return { perks };
-  } catch (error: any) {
-    console.error("Error getting all perks. Message: " + error.message);
-  }
+  const perks = await prisma.perk.findMany();
+  return perks;
 }
 
 export async function updatePerkByID(id: string, data: any) {
