@@ -5,6 +5,8 @@ import clsx from "clsx";
 import { createService } from "~/models/service.server";
 import { getPerks } from "~/models/perk.server";
 import invariant from "tiny-invariant";
+import Dropdown from "~/components/dropdown/Dropdown";
+import { useMemo } from "react";
 
 
 export function meta({ matches }: { matches: any }) {
@@ -75,7 +77,10 @@ export default function SuperAdminProjectCreateRoute() {
   const navigation = useNavigation()
   const actionData = useActionData<typeof action>()
   const { perks } = useLoaderData<typeof loader>()
-  const perkOptions = perks.map(perk => ({ label: perk.name, value: perk.id }))
+  const perkOptions = useMemo(() => {
+    return perks.map(perk => ({ label: perk.name, value: perk.id }))
+  }, [perks])
+  console.log(`Perks: ${JSON.stringify(perkOptions)}`)
   const options = [
     { label: "test1", value: "test1" },
     { label: "test2", value: "test2" },
@@ -119,7 +124,7 @@ export default function SuperAdminProjectCreateRoute() {
                 </div>
                 <div className="grid gap-y-4">
                   <label htmlFor="description">Perks</label>
-
+                  <Dropdown options={perkOptions} placeHolder={"Search..."} />
                   {actionData?.errors.description &&
                     <p className="text-red-500">{actionData.errors.description}</p>
                   }
