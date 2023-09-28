@@ -6,7 +6,9 @@ import { createService } from "~/models/service.server";
 import { getPerks } from "~/models/perk.server";
 import invariant from "tiny-invariant";
 import Dropdown from "~/components/dropdown/Dropdown";
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+
 
 
 export function meta({ matches }: { matches: any }) {
@@ -49,8 +51,15 @@ export const action = async ({ request }: ActionArgs) => {
   }
   const name = formData.get("name") as string
   const description = formData.get("description") as string
+  const perksraw = formData.get("perks") as string
+  const perks = JSON.parse(perksraw)
 
-  const serializedData = { name, image: url, description }
+  const serializedData = {
+    name,
+    image: url,
+    description,
+    perks: perks.map((perk: any) => perk.value)
+  }
 
   const [errors, service] = await createService(serializedData)
   console.log("Error from createService")
@@ -73,25 +82,32 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return { perks }
 };
 
+type Perk = string
+
 export default function SuperAdminProjectCreateRoute() {
   const navigation = useNavigation()
   const actionData = useActionData<typeof action>()
   const { perks } = useLoaderData<typeof loader>()
+  const [currentPerks, setCurrentPerks] = useState<Perk[]>([])
+  const selectRef = useRef<HTMLSelectElement>(null)
   const perkOptions = useMemo(() => {
     return perks.map(perk => ({ label: perk.name, value: perk.id }))
   }, [perks])
-  console.log(`Perks: ${JSON.stringify(perkOptions)}`)
-  const options = [
-    { label: "test1", value: "test1" },
-    { label: "test2", value: "test2" },
-    { label: "test3", value: "test3" },
-    { label: "test4", value: "test4" }
-  ]
+
+  const handlePerksChange = useCallback((value: any) => {
+    setCurrentPerks(value)
+  }, [setCurrentPerks, currentPerks])
+
+  useEffect(() => {
+    if (selectRef.current) {
+      console.log(selectRef.current.value)
+    }
+  })
 
   return (
     <main>
       <div className="flex justify-center font-body text-4xl md:text-6xl py-20">
-        <h1>Create Project</h1>
+        <h1>Create Service</h1>
       </div>
       <div>
         <div className="max-w-xl mx-auto">
@@ -124,9 +140,11 @@ export default function SuperAdminProjectCreateRoute() {
                 </div>
                 <div className="grid gap-y-4">
                   <label htmlFor="description">Perks</label>
-                  <Dropdown options={perkOptions} placeHolder={"Search..."} />
-                  {actionData?.errors.description &&
-                    <p className="text-red-500">{actionData.errors.description}</p>
+                  <Dropdown options={perkOptions} placeHolder={"Search..."} onChange={handlePerksChange} />
+                  <input type="text" hidden name="perks" value={JSON.stringify(currentPerks)} />
+                  {actionData?.errors.perks &&
+                    <p className="text-red-500">{actionData.errors.perks as string}</p>
+
                   }
                 </div>
                 <div className="grid gap-y-4">

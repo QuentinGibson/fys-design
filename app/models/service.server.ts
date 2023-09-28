@@ -8,12 +8,25 @@ export type CustomService = Omit<Service, "created_at"> & {
   created_at: string;
   perks: CustomPerk[];
 };
-function isValidImageFileName(fileName: string): boolean {
+function isValidPerks(perks: string[]) {
+  async function isIdValue(perk: string) {
+    const res = prisma.perk.findUnique({ where: { id: perk } })
+    return res !== null ? true : false
+  }
+  perks.forEach(perk => {
+    if (!isIdValue(perk)) {
+      return false
+    }
+  })
+  return true
+}
+function isValidImageFileName(fileName: File): boolean {
   // Define a list of allowed image file extensions (add more as needed)
   const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp'];
+  console.log(`FILENAME: ${fileName}`)
 
   // Get the file extension from the fileName
-  const fileExtension = fileName.toLowerCase().slice((fileName.lastIndexOf(".") - 1 >>> 0) + 2);
+  const fileExtension = fileName.name.toLowerCase().slice((fileName.name.lastIndexOf(".") - 1 >>> 0) + 2);
 
   // Check if the file extension is in the list of allowed extensions
   return allowedExtensions.includes(`.${fileExtension}`);
@@ -34,18 +47,24 @@ function isValidDescription(description: string, maxLength: number = 400): boole
   return true;
 }
 
+
 export async function createService(data: any) {
-  let errors: InputError | null = {}
+  let errors: InputError = {}
 
   // Validate Input Data
-  let { name, image, description } = data
+  let { name, image, description, perks } = data
+  if (perks) {
+    if (!isValidPerks(perks)) {
+      errors.perks = "Invalid Perks. Perk id not found!"
+    }
+  }
   if (name) {
     if (!validateName(name)) {
       errors.name = "Invalid Name. Please enter a different name!"
     }
   }
   console.log(`IMAGE: ${image}`)
-  if (image.name.length > 0) {
+  if (image?.name?.length > 0) {
     if (!isValidImageFileName(image)) {
       errors.image = "Error, Please enter a valid image file."
     }
@@ -60,9 +79,13 @@ export async function createService(data: any) {
   if (Object.keys(errors).length > 0) {
     return [errors, null]
   }
+  console.log(`Perks map ${JSON.stringify(perks.map((perk: any) => ({ id: perk })))}`)
+  data.perks = {
+    connect: perks.map((perk: any) => ({ id: perk }))
+  }
 
   // Call create Project
-  const service = await prisma.service.create({ data: data })
+  const service = await prisma.service.create({ data: data, include: { perks } })
     .catch(error => {
       console.log(`Service creation error: ${error}`)
     });
@@ -71,7 +94,10 @@ export async function createService(data: any) {
 
 export async function getServiceByID(id: string) {
   try {
-    const service = await prisma.service.findUnique({ where: { id } });
+    const service = await prisma.service.findUnique({
+      where: { id },
+      include: { perks: true }
+    });
     return service;
   } catch (error: any) {
     console.error("Error finding service. Message: " + error.message);
@@ -98,7 +124,7 @@ export async function updateService(id: string, data: any) {
   let errors: InputError | null = {}
 
   // Validate Input Data
-  let { name, description, image } = data
+  let { name, description, image, perks } = data
   if (name && !validateName(name)) {
     errors.name = "Invalid Name. Please enter a different name!"
   }
@@ -117,6 +143,10 @@ export async function updateService(id: string, data: any) {
 
   if (Object.keys(errors).length > 0) {
     return [errors, null]
+  }
+
+  if (perks) {
+    data.perks.connect = perks.map((perk: string) => ({ id: perk }))
   }
 
   // Call create Project

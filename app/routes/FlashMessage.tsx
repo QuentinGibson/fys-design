@@ -17,7 +17,7 @@ export default function FlashMessage({ message }: FlashMessageProps) {
   return (
     <div className={
       clsx(
-        "absolute duration-1000 transform top-0",
+        "absolute duration-1000 transform top-0 w-full",
         hide && "opacity-0 hidden"
       )}>
       {message.message &&

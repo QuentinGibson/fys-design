@@ -5,6 +5,9 @@ import invariant from "tiny-invariant";
 import { getSession, requireUser, sessionStorage } from "~/session.server";
 import clsx from "clsx";
 import { getServiceByID, updateService } from "~/models/service.server";
+import Dropdown from "~/components/dropdown/Dropdown";
+import { useCallback, useState } from "react";
+import { getPerks } from "~/models/perk.server";
 
 
 export function meta({ matches }: { matches: any }) {
@@ -51,6 +54,8 @@ export const action = async ({ request, params }: ActionArgs) => {
   }
   const name = formData.get("name") as string
   const description = formData.get("description") as string
+  const perkraw = formData.get("perk") as any
+  console.log(perkraw)
 
   const inputData = { name, description, image }
   const [errors, service] = await updateService(inputId, inputData)
@@ -85,14 +90,21 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   invariant(id, "No id found!")
   const service = await getServiceByID(id)
   invariant(service, "No project found!")
-  return { service }
+  const perks = await getPerks()
+  return { service, perks }
 }
 
 
 export default function SuperAdminProjectSlugRoute() {
-  const { service } = useLoaderData<typeof loader>()
+  const { service, perks } = useLoaderData<typeof loader>()
   const actionData = useActionData<typeof action>()
+  const [currentPerks, setCurrentPerks] = useState<Perk[]>([])
   const navigation = useNavigation()
+  const perkOptions = perks.map((perk: any) => ({ label: perk.label, value: perk.id }))
+
+  const handlePerksChange = useCallback((value: any) => {
+    setCurrentPerks(value)
+  }, [setCurrentPerks, currentPerks])
   return (
     <main>
       <div className="flex justify-center font-body text-4xl md:text-6xl py-20">
@@ -147,6 +159,12 @@ export default function SuperAdminProjectSlugRoute() {
                 <div className="grid">
                   <label htmlFor="image">Image</label>
                   <input name="image" id="image" type="file" accept="image/*" />
+                </div>
+                <div className="grid">
+                  <label htmlFor="image">Perks</label>
+                  <Dropdown options={perkOptions} placeHolder={"Search..."} onChange={handlePerksChange} />
+                  <input type="text" hidden name="perks" value={JSON.stringify(currentPerks)} />
+                  {/* {(actionData.errors as any).perks && <p className="text-red-500">{(actionData?.errors as any).perks}</p> } */}
                 </div>
                 <div className="grid gap-y-4">
                   <label htmlFor="description">Description</label>
