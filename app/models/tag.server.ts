@@ -21,7 +21,7 @@ export async function getTagByID(id: string) {
 export async function getTags() {
   try {
     const tags = prisma.tag.findMany();
-    return { tags };
+    return tags;
   } catch (error: any) {
     console.error("Error finding all tags. Message: " + error.message);
   }

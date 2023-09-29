@@ -140,7 +140,7 @@ export default function SuperAdminProjectCreateRoute() {
                 </div>
                 <div className="grid gap-y-4">
                   <label htmlFor="description">Perks</label>
-                  <Dropdown options={perkOptions} placeHolder={"Search..."} onChange={handlePerksChange} />
+                  <Dropdown currentSelected={null} options={perkOptions} placeHolder={"Search..."} onChange={handlePerksChange} />
                   <input type="text" hidden name="perks" value={JSON.stringify(currentPerks)} />
                   {actionData?.errors.perks &&
                     <p className="text-red-500">{actionData.errors.perks as string}</p>

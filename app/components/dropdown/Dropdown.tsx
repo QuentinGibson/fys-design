@@ -25,16 +25,18 @@ type OptionValue = {
 type DropdownParams = {
   placeHolder: string,
   options: { label: string, value: string }[],
-  onChange: ((data: any) => void)
+  onChange: ((data: any) => void),
+  currentSelected: { label: string, value: string }[] | null
 }
 
 const Dropdown = ({
+  currentSelected,
   placeHolder,
   options,
   onChange
 }: DropdownParams) => {
   const [showMenu, setShowMenu] = useState<boolean>(false);
-  const [selectedValue, setSelectedValue] = useState<OptionValue[]>([]);
+  const [selectedValue, setSelectedValue] = useState<OptionValue[]>(currentSelected || []);
   const [searchValue, setSearchValue] = useState<string>("");
   const searchRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLDivElement>(null);

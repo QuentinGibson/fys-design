@@ -288,7 +288,7 @@ async function seed() {
       image: "/static/cases/sweet-e.png",
       slug: "sweet-e",
       logo: "/static/cases/logos/sweet-e-logo.png",
-      tag: { connect: [{ id: growthTag.id }] },
+      tags: { connect: [{ id: growthTag.id }] },
       content: "",
     },
   });
@@ -299,7 +299,7 @@ async function seed() {
       image: "/static/cases/furbish.png",
       slug: "furbish-studio",
       logo: "/static/cases/logos/furbish-logo.png",
-      tag: { connect: [{ id: growthTag.id }] },
+      tags: { connect: [{ id: growthTag.id }] },
       content: "",
     },
   });

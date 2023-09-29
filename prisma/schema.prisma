@@ -84,7 +84,7 @@ model Case {
   content    String
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
-  tag        Tag[]
+  tags       Tag[]
 }
 
 model Tag {

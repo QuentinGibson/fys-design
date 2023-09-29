@@ -1,1 +1,1 @@
-type Perk = string
+type Perk = { label: string, value: sting }

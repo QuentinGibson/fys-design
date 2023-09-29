@@ -5,7 +5,7 @@ import { getProjects } from "~/models/project.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const cases = await getCases()
-  return json(cases)
+  return json({ cases })
 };
 
 export function meta({ matches }: { matches: any }) {
@@ -24,10 +24,10 @@ export default function SuperAdminProjectRoute() {
         <h1 className="font-body text-4xl">View Cases</h1>
       </div>
       <div className="flex flex-col gap-4 max-w-lg mx-auto items-center">
-        {cases.map((case, index) => {
+        {cases.map((caseData, index) => {
           return (
-        <Link className="hover:underline" key={index} to={`/superadmin/project/${project.slug}`}>{project.name}</Link>
-        )
+            <Link className="hover:underline" key={index} to={`/superadmin/case/${caseData.slug}`}>{caseData.slug}</Link>
+          )
         })}
       </div>
     </main>

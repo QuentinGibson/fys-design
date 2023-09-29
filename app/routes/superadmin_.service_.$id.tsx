@@ -47,17 +47,18 @@ export const action = async ({ request, params }: ActionArgs) => {
   );
 
   const image = formData.get("image") as any || null
-  let url
+  let url: string = ""
   if (image.filepath) {
     const publicIndex = image.filepath.indexOf("uploads") - 1
     url = image.filepath.slice(publicIndex)
   }
   const name = formData.get("name") as string
   const description = formData.get("description") as string
-  const perkraw = formData.get("perk") as any
-  console.log(perkraw)
+  const perksraw = formData.get("perks") as any
+  console.log(perksraw)
+  const perks = JSON.parse(perksraw)
 
-  const inputData = { name, description, image }
+  const inputData = { name, description, image: url, perks }
   const [errors, service] = await updateService(inputId, inputData)
   console.log("Error from update")
   console.table(errors)
@@ -98,9 +99,10 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export default function SuperAdminProjectSlugRoute() {
   const { service, perks } = useLoaderData<typeof loader>()
   const actionData = useActionData<typeof action>()
-  const [currentPerks, setCurrentPerks] = useState<Perk[]>([])
   const navigation = useNavigation()
-  const perkOptions = perks.map((perk: any) => ({ label: perk.label, value: perk.id }))
+  const perkOptions = perks.map(perk => ({ label: perk.name, value: perk.id }))
+  const startingPerks = service.perks.map(perk => ({ label: perk.name, value: perk.id }))
+  const [currentPerks, setCurrentPerks] = useState<Perk[]>(startingPerks || [])
 
   const handlePerksChange = useCallback((value: any) => {
     setCurrentPerks(value)
@@ -162,7 +164,7 @@ export default function SuperAdminProjectSlugRoute() {
                 </div>
                 <div className="grid">
                   <label htmlFor="image">Perks</label>
-                  <Dropdown options={perkOptions} placeHolder={"Search..."} onChange={handlePerksChange} />
+                  <Dropdown currentSelected={startingPerks} options={perkOptions} placeHolder={"Search..."} onChange={handlePerksChange} />
                   <input type="text" hidden name="perks" value={JSON.stringify(currentPerks)} />
                   {/* {(actionData.errors as any).perks && <p className="text-red-500">{(actionData?.errors as any).perks}</p> } */}
                 </div>

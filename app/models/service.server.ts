@@ -131,7 +131,7 @@ export async function updateService(id: string, data: any) {
   if (description && !isValidDescription(description)) {
     errors.description = "Invalid Description. Please enter a description within 200 characters!"
   }
-  if (image.name.length > 0) {
+  if (image.length > 0) {
     if (!isValidImageFileName(image)) {
       errors.image = "Error, Please enter a valid image file."
     }
@@ -146,7 +146,13 @@ export async function updateService(id: string, data: any) {
   }
 
   if (perks) {
-    data.perks.connect = perks.map((perk: string) => ({ id: perk }))
+    data.perks = {
+      connect:
+        perks.map((perk: { label: string, value: string }) => ({
+          id: perk.value
+        }))
+
+    }
   }
 
   // Call create Project
