@@ -1,13 +1,16 @@
 import { ActionArgs, LoaderArgs, json, redirect, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
-import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, Link, useActionData, useLoaderData, useNavigation } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import { getProjectBySlug, updateProjectBySlug } from "~/models/project.server";
 import { useQuill } from "react-quilljs";
 import draftCSS from "quill/dist/quill.snow.css"
 import editorStyles from "~/editor.css"
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getSession, requireUser, sessionStorage } from "~/session.server";
 import clsx from "clsx";
+import Dropdown from "~/components/dropdown/Dropdown";
+import { getIndustries } from "~/models/industry.server";
+import { getTypes } from "~/models/type.server";
 
 export const links = () => [{ rel: "stylesheet", href: draftCSS }, { rel: "stylesheet", href: editorStyles }];
 
@@ -58,8 +61,16 @@ export const action = async ({ request, params }: ActionArgs) => {
   const slug = formData.get("slug") as string
   const summary = formData.get("summary") as string
   const content = formData.get("content") as string
+  const industriesRaw = JSON.parse(formData.get("industries") as string)
+  const servicesRaw = JSON.parse(formData.get("services") as string)
+  const industries = {
+    set: industriesRaw.map((industry: Option) => ({ id: industry.value }))
+  }
+  const services = {
+    set: servicesRaw.map((service: Option) => ({ id: service.value }))
+  }
 
-  const inputData = { name, link, slug, summary, image: url, content }
+  const inputData = { name, link, slug, summary, image: url, content, industries, services }
   const [errors, project] = await updateProjectBySlug(inputSlug, inputData)
   console.log("Error from update")
   console.table(errors)
@@ -91,16 +102,35 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const slug = params.slug
   invariant(slug, "No slug found!")
   const project = await getProjectBySlug(slug)
+  const industries = await getIndustries()
+  const services = await getTypes()
   invariant(project, "No project found!")
-  return { project }
+  return { project, industries, services }
 }
 
 
 export default function SuperAdminProjectSlugRoute() {
-  const { project } = useLoaderData<typeof loader>()
+  const { project, industries, services } = useLoaderData<typeof loader>()
   const { quill, quillRef } = useQuill();
-  const actionData = useActionData<typeof action>()
   const [content, setContent] = useState<string>("")
+  const navigation = useNavigation()
+  const submitting = navigation.state === "submitting"
+  const startingIndustries = project.industries.map(industry => ({ label: industry.name, value: industry.id }))
+  const startingServices = project.services.map(service => ({ label: service.name, value: service.id }))
+  const [currentIndustries, setCurrentIndustries] = useState<Option[]>(startingIndustries || [])
+  const [currentServices, setCurrentServices] = useState<Option[]>(startingServices || [])
+  const actionData = useActionData<typeof action>()
+  const industryOptions = industries.map((industry) => ({ label: industry.name, value: industry.id }))
+  const serviceOptions = services.map((service) => ({ label: service.name, value: service.id }))
+  const handleIndustryChange = useCallback((value: Option[]) => {
+    setCurrentIndustries(value)
+    console.log(`Industry: ${JSON.stringify(value)}`)
+  }, [currentIndustries, setCurrentIndustries])
+  const handleServiceChange = useCallback((value: Option[]) => {
+    setCurrentServices(value)
+    console.log(`Services: ${JSON.stringify(value)}`)
+  }, [currentServices, setCurrentServices])
+
   useEffect(() => {
     quill?.on('text-change', () => {
       setContent(quill?.root.innerHTML)
@@ -111,6 +141,7 @@ export default function SuperAdminProjectSlugRoute() {
     quill?.clipboard.dangerouslyPasteHTML(0, project.content);
 
   }, [quill])
+
 
   return (
     <main>
@@ -140,151 +171,172 @@ export default function SuperAdminProjectSlugRoute() {
             </Form>
           </div>
           <Form method="POST" encType="multipart/form-data">
-            <div className="flex flex-col gap-8">
-              <div className="grid grid-cols-2">
-                <div className="flex flex-col gap-4">
-                  <label htmlFor="">
-                    <span className="text-lg">Name*</span>
-                    <br />
-                    <input
-                      name="name"
-                      type="text"
-                      className={clsx(
-                        "text-black",
-                        actionData?.errors.name &&
-                        "border-2 border-red-500"
-                      )}
-                      defaultValue={
-                        actionData?.values.name ||
-                        project.name
-                      }
-                      required
-                    />
-                  </label>
-                  {
-                    actionData?.errors.name &&
-                    <p className="text-red-500">
-                      {actionData?.errors.name}
-                    </p>
-                  }
-                </div>
-                <div className="flex flex-col gap-4">
-                  <label htmlFor="">
-                    <span className="text-lg">Link</span>
-                    <br />
-                    <input
-                      name="link"
-                      type="text"
-                      className={clsx(
-                        "text-black",
-                        actionData?.errors.link &&
-                        "border-2 border-red-500"
-                      )}
-                      defaultValue={
-                        actionData?.values.link ||
-                        project.link ||
-                        ""
-                      }
-                    />
-                  </label>
-                  {
-                    actionData?.errors.link &&
-                    <p className="text-red-500">
-                      {actionData?.errors.link}
-                    </p>
-                  }
-
-                </div>
-              </div>
-              <div className="grid grid-cols-2">
-                <div className="flex flex-col gap-4">
-                  <label htmlFor="">
-                    <span className="text-lg">Slug*</span>
-                    <br />
-                    <input
-                      name="slug"
-                      type="text"
-                      className={clsx(
-                        "text-black",
-                        actionData?.errors.name &&
-                        "border-2 border-red-500"
-                      )}
-                      defaultValue={
-                        actionData?.values.slug ||
-                        project.slug
-                      }
-                      required />
-                  </label>
-                  {
-                    actionData?.errors.slug &&
-                    <p className="text-red-500">
-                      {actionData?.errors.slug}
-                    </p>
-                  }
-
-                </div>
-              </div>
-              <div className="grid">
-                <label htmlFor="image">Image</label>
-                <input name="image"
-                  id="image"
-                  type="file"
-                  accept="image/*"
-                />
-              </div>
-              <div className="grid gap-y-4">
-                <label htmlFor="summary">Summary*</label>
-                <textarea
-                  name="summary"
-                  id="summary"
-                  className={clsx(
-                    "h-40 text-black",
-                    actionData?.errors.summary &&
-                    "border-2 border-red-500"
-                  )}
-                  defaultValue={
-                    actionData?.values.summary ||
-                    project.summary
-                  }
-                  required
-                />
-                {
-                  actionData?.errors.summary &&
-                  <p className="text-red-500">
-                    {actionData?.errors.summary}
-                  </p>
-                }
-
-              </div>
-              <div className="flex">
-                <div>
-                  <div className="h-[1000px] w-full mb-20">
-
+            <fieldset disabled={submitting}>
+              <div className="flex flex-col gap-8">
+                <div className="grid grid-cols-2">
+                  <div className="flex flex-col gap-4">
+                    <label htmlFor="">
+                      <span className="text-lg">Name*</span>
+                      <br />
+                      <input
+                        name="name"
+                        type="text"
+                        className={clsx(
+                          "text-black",
+                          actionData?.errors.name &&
+                          "border-2 border-red-500"
+                        )}
+                        defaultValue={
+                          actionData?.values.name ||
+                          project.name
+                        }
+                        required
+                      />
+                    </label>
                     {
-                      actionData?.errors.content &&
+                      actionData?.errors.name &&
                       <p className="text-red-500">
-                        {actionData?.errors.content}
+                        {actionData?.errors.name}
+                      </p>
+                    }
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    <label htmlFor="">
+                      <span className="text-lg">Link</span>
+                      <br />
+                      <input
+                        name="link"
+                        type="text"
+                        className={clsx(
+                          "text-black",
+                          actionData?.errors.link &&
+                          "border-2 border-red-500"
+                        )}
+                        defaultValue={
+                          actionData?.values.link ||
+                          project.link ||
+                          ""
+                        }
+                      />
+                    </label>
+                    {
+                      actionData?.errors.link &&
+                      <p className="text-red-500">
+                        {actionData?.errors.link}
                       </p>
                     }
 
-                    <div ref={quillRef} />
-                    <input
-                      type="hidden"
-                      name="content"
-                      value={content}
-                    />
                   </div>
                 </div>
+                <div className="grid grid-cols-2">
+                  <div className="flex flex-col gap-4">
+                    <label htmlFor="">
+                      <span className="text-lg">Slug*</span>
+                      <br />
+                      <input
+                        name="slug"
+                        type="text"
+                        className={clsx(
+                          "text-black",
+                          actionData?.errors.name &&
+                          "border-2 border-red-500"
+                        )}
+                        defaultValue={
+                          actionData?.values.slug ||
+                          project.slug
+                        }
+                        required />
+                    </label>
+                    {
+                      actionData?.errors.slug &&
+                      <p className="text-red-500">
+                        {actionData?.errors.slug}
+                      </p>
+                    }
+
+                  </div>
+                </div>
+                <div className="grid">
+                  <label htmlFor="image">Image</label>
+                  <input name="image"
+                    id="image"
+                    type="file"
+                    accept="image/*"
+                  />
+                </div>
+
+                <div className="grid gap-y-4">
+                  <label htmlFor="description">Industries</label>
+                  <Dropdown currentSelected={startingIndustries} options={industryOptions} placeHolder={"Search..."} onChange={handleIndustryChange} />
+                  <input type="text" hidden name="industries" value={JSON.stringify(currentIndustries)} />
+                  {/* {actionData?.errors.industries &&
+                    <p className="text-red-500">{actionData.errors.industries as string}</p>
+
+                  } */}
+                </div>
+                <div className="grid gap-y-4">
+                  <label htmlFor="description">Services</label>
+                  <Dropdown currentSelected={startingServices} options={serviceOptions} placeHolder={"Search..."} onChange={handleServiceChange} />
+                  <input type="text" hidden name="services" value={JSON.stringify(currentServices)} />
+                  {/* {actionData?.errors.services &&
+                    <p className="text-red-500">{actionData.errors.services as string}</p>
+
+                  } */}
+                </div>
+                <div className="grid gap-y-4">
+                  <label htmlFor="summary">Summary*</label>
+                  <textarea
+                    name="summary"
+                    id="summary"
+                    className={clsx(
+                      "h-40 text-black",
+                      actionData?.errors.summary &&
+                      "border-2 border-red-500"
+                    )}
+                    defaultValue={
+                      actionData?.values.summary ||
+                      project.summary
+                    }
+                    required
+                  />
+                  {
+                    actionData?.errors.summary &&
+                    <p className="text-red-500">
+                      {actionData?.errors.summary}
+                    </p>
+                  }
+
+                </div>
+                <div className="flex">
+                  <div>
+                    <div className="h-[1000px] w-full mb-20">
+
+                      {
+                        actionData?.errors.content &&
+                        <p className="text-red-500">
+                          {actionData?.errors.content}
+                        </p>
+                      }
+
+                      <div ref={quillRef} />
+                      <input
+                        type="hidden"
+                        name="content"
+                        value={content}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <button
+                    className="bg-black py-3 px-4"
+                    type="submit"
+                  >
+                    {submitting ? "Saving Project" : "Save Project"}
+                  </button>
+                </div>
               </div>
-              <div>
-                <button
-                  className="bg-black py-3 px-4"
-                  type="submit"
-                >
-                  Save Project
-                </button>
-              </div>
-            </div>
+            </fieldset>
           </Form>
         </div>
       </div >

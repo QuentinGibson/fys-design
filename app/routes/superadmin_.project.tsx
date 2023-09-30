@@ -1,10 +1,23 @@
-import { LoaderArgs, json } from "@remix-run/node";
+
+import { LoaderArgs, json, redirect } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import { getProjects } from "~/models/project.server";
+import { requireUser, getSession } from "~/session.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
+  const user = await requireUser(request)
+  if (user.role !== "ADMIN") {
+    const session = await getSession(request)
+    session.flash("level", "ERROR")
+    session.flash("message", "Must have premission to view this page.")
+    redirect("/", {
+      headers: {
+        "Set-Cookie": await sessionStorage.commitSession(session)
+      }
+    })
+  }
   const projects = await getProjects()
-  return json(projects)
+  return json({ projects })
 };
 
 export function meta({ matches }: { matches: any }) {
@@ -15,7 +28,7 @@ export function meta({ matches }: { matches: any }) {
   ]
 }
 
-export default function SuperAdminProjectRoute() {
+export default function SuperAdminServiceRoute() {
   const { projects } = useLoaderData<typeof loader>()
   return (
     <main>

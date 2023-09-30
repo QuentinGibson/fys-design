@@ -2,6 +2,7 @@ import { Prisma, Project } from "@prisma/client";
 import invariant from "tiny-invariant";
 import { prisma } from "~/db.server";
 import { validateName } from "~/utils";
+import { getTypeByID } from "./type.server";
 
 function isValidURL(url: string): boolean {
   const urlPattern = /^(http|https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
@@ -44,7 +45,7 @@ function isValidContent(html: string): boolean {
   return true
 }
 
-  function isValidImageFileName(fileName: string): boolean {
+function isValidImageFileName(fileName: string): boolean {
   // Define a list of allowed image file extensions (add more as needed)
   const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp'];
 
@@ -54,15 +55,19 @@ function isValidContent(html: string): boolean {
   // Check if the file extension is in the list of allowed extensions
   return allowedExtensions.includes(`.${fileExtension}`);
 }
+async function validateServiceId(id: string): Promise<boolean> {
+  const type = await getTypeByID(id)
+  return Boolean(type)
+}
 
 export async function createProject(
-  data: Prisma.ProjectCreateInput & { image: string | null }):
+  data: Prisma.ProjectCreateInput):
   Promise<[errors: InputError | null, project: Project | null]> {
   let errors: InputError | null = {}
 
 
   // Validate Input Data
-  const {name, link, slug, summary, content, image} = data
+  const { name, link, slug, summary, content, image, industries, services } = data
   if (!validateName(name)) {
     errors.name = "Invalid Name. Please enter a different name!"
   }
@@ -77,7 +82,7 @@ export async function createProject(
   }
 
   if (!isValidContent(content)) {
-    errors.content =  "Invalid Content. Please try again!"
+    errors.content = "Invalid Content. Please try again!"
   }
 
   if (!isValidImageFileName(image)) {
@@ -89,13 +94,13 @@ export async function createProject(
   }
 
   // Call create Project
-  const project = await prisma.project.create({data: data});
+  const project = await prisma.project.create({ data: data });
   return [null, project];
 }
 
 export async function getProjectBySlug(slug: string) {
   try {
-    const project = await prisma.project.findUnique({ where: { slug }, include: { services: true, industries: true} });
+    const project = await prisma.project.findUnique({ where: { slug }, include: { services: true, industries: true } });
     invariant(project, "Project not found!");
     return project;
   } catch (error: any) {
@@ -121,46 +126,55 @@ export async function getLatestProjects() {
         created_at: "desc",
       },
     });
-    return  projects ;
+    return projects;
   } catch (error: any) {
     console.error("Error fetching latest projects. Message: " + error.message);
   }
 }
 
 export async function getProjects() {
-  try {
-    const projects = await prisma.project.findMany();
-    return { projects };
-  } catch (error: any) {
-    console.error("Error fetching all projects. Message: " + error.message);
-  }
+  const projects = await prisma.project.findMany();
+  return projects;
 }
 
-export async function updateProjectBySlug( inputSlug: string, data: Partial<Project>) {
+export async function updateProjectBySlug(inputSlug: string, data: Prisma.ProjectUpdateInput) {
   let errors: InputError | null = {}
 
   // Validate Input Data
-  let {name, link, slug , summary, content, image} = data
+  let { name, link, slug, summary, content, image, services, industries } = data
+  if (services) {
+    errors.services = "Invalid ID. Could not find one or many service types"
+  }
   if (name && !validateName(name)) {
     errors.name = "Invalid Name. Please enter a different name!"
   }
-  if (link && !isValidURL(link)) {
-    errors.link = "Invalid Link. Please enter a valid link!"
+  if (typeof link === 'string') {
+    if (!isValidURL(link)) {
+      errors.link = "Invalid Link. Please enter a valid link!"
+    }
   }
-  if (slug && !isValidSlug(slug)) {
-    errors.slug = "Invalid Slug. Please remove invalid characters!"
+  if (typeof slug === "string") {
+    if (!isValidSlug(slug)) {
+      errors.slug = "Invalid Slug. Please remove invalid characters!"
+    }
   }
-  if (summary && !isValidSummary(summary)) {
-    errors.summary = "Invalid Summary. Summary must be less than 200 characters!"
+  if (typeof summary === "string") {
+    if (!isValidSummary(summary)) {
+      errors.summary = "Invalid Summary. Summary must be less than 200 characters!"
+    }
+  }
+  if (typeof content === "string") {
+    if (!isValidContent(content)) {
+      errors.content = "Invalid Content. Please try again!"
+    }
   }
 
-  if (content && !isValidContent(content)) {
-    errors.content =  "Invalid Content. Please try again!"
+  if (typeof image === "string") {
+    if (!isValidImageFileName(image)) {
+      errors.image = "Error, Please enter a valid image file."
+    }
   }
 
-  if (image && !isValidImageFileName(image)) {
-    errors.image = "Error, Please enter a valid image file."
-  }
 
   if (image === "") {
     image = undefined
@@ -170,7 +184,14 @@ export async function updateProjectBySlug( inputSlug: string, data: Partial<Proj
     return [errors, null]
   }
 
-  // Call create Project
+  if (services) {
+
+  }
+
+  if (industries) {
+
+  }
+  // Update Project
   const project = await prisma.project.update({ where: { slug: inputSlug }, data: data })
     .catch(error => {
       console.log(`Project update error: ${error}`)
@@ -180,7 +201,7 @@ export async function updateProjectBySlug( inputSlug: string, data: Partial<Proj
 
 export async function deleteProjectBySlug(slug: string):
   Promise<[errors: any, project: Project | null]> {
-  
+
   try {
     const project = await prisma.project.delete({ where: { slug } });
     return [null, project]

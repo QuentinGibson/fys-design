@@ -1,8 +1,7 @@
 
 import { LoaderArgs, json, redirect } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { getServices } from "~/models/service.server";
-import { getTestimonials } from "~/models/testimonial.server";
+import { getTags } from "~/models/tag.server";
 import { requireUser, getSession } from "~/session.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
@@ -17,29 +16,29 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       }
     })
   }
-  const services = await getServices()
-  return json({ services })
+  const tags = await getTags()
+  return json({ tags })
 };
 
 export function meta({ matches }: { matches: any }) {
   const rootMeta = matches[0].meta;
   const title = rootMeta.find((m: any) => m.title)
   return [
-    { title: title.title + " | Super Admin All Services" }
+    { title: title.title + " | Super Admin All Tags" }
   ]
 }
 
 export default function SuperAdminServiceRoute() {
-  const { services } = useLoaderData<typeof loader>()
+  const { tags } = useLoaderData<typeof loader>()
   return (
     <main>
       <div className="flex justify-center py-20">
-        <h1 className="font-body text-4xl">View Services</h1>
+        <h1 className="font-body text-4xl">View Testimonials</h1>
       </div>
       <div className="flex flex-col gap-4 max-w-lg mx-auto items-center">
-        {services.map((service, index) => {
+        {tags.map((tag, index) => {
           return (
-            <Link className="hover:underline" key={index} to={`/superadmin/service/${service.id}`}>{service.name}</Link>
+            <Link className="hover:underline" key={index} to={`/superadmin/tag/${tag.id}`}>{tag.name}</Link>
           )
         })}
       </div>

@@ -1,12 +1,16 @@
-import { ActionArgs, json, redirect, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
-import { Form, useActionData, useNavigation } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { ActionArgs, LoaderArgs, json, redirect, unstable_composeUploadHandlers, unstable_createFileUploadHandler, unstable_createMemoryUploadHandler, unstable_parseMultipartFormData } from "@remix-run/node";
+import { Form, useActionData, useLoaderData, useNavigation } from "@remix-run/react";
+import { useCallback, useEffect, useState } from "react";
 import { useQuill } from "react-quilljs";
 import draftCSS from "quill/dist/quill.snow.css"
 import editorStyles from "~/editor.css"
 import { getSession, requireUser } from "~/session.server";
 import { createProject } from "~/models/project.server";
 import clsx from "clsx";
+import Dropdown from "~/components/dropdown/Dropdown";
+import { getIndustries } from "~/models/industry.server";
+import { getServices } from "~/models/service.server";
+import { getTypes } from "~/models/type.server";
 
 export const links = () => [{ rel: "stylesheet", href: draftCSS }, { rel: "stylesheet", href: editorStyles }];
 
@@ -51,10 +55,17 @@ export const action = async ({ request }: ActionArgs) => {
   const name = formData.get("name") as string
   const link = formData.get("link") as string
   const slug = formData.get("slug") as string
+  const industriesRaw = JSON.parse(formData.get("industries") as string)
+  const servicesRaw = JSON.parse(formData.get("services") as string)
+  const industries = {
+    connect: industriesRaw.map((industry: Option) => ({ id: industry.value }))
+  }
+  const services = {
+    connect: servicesRaw.map((service: Option) => ({ id: service.value }))
+  }
   const summary = formData.get("summary") as string
   const content = formData.get("content") as string
-
-  const serializedData = { name, link, slug, summary, content, image: url }
+  const serializedData = { name, link, slug, summary, content, image: url, industries, services }
 
   const [errors, project] = await createProject(serializedData)
   console.log("Error from createProject")
@@ -72,11 +83,31 @@ export const action = async ({ request }: ActionArgs) => {
 
 };
 
+export const loader = async ({ request, params }: LoaderArgs) => {
+  const allIndustries = await getIndustries()
+  const allServices = await getTypes()
+  return json({ industries: allIndustries, services: allServices })
+};
+
 export default function SuperAdminProjectCreateRoute() {
   const { quill, quillRef } = useQuill();
   const navigation = useNavigation()
   const [content, setContent] = useState<string>("")
+  const [currentIndustries, setCurrentIndustries] = useState<Option[]>([])
+  const [currentServices, setCurrentServices] = useState<Option[]>([])
+  const { industries, services } = useLoaderData<typeof loader>()
   const actionData = useActionData<typeof action>()
+  const industryOptions = industries.map((industry) => ({ label: industry.name, value: industry.id }))
+  const serviceOptions = services.map((service) => ({ label: service.name, value: service.id }))
+  const handleIndustryChange = useCallback((value: Option[]) => {
+    setCurrentIndustries(value)
+    console.log(`Industry: ${JSON.stringify(value)}`)
+  }, [currentIndustries, setCurrentIndustries])
+  const handleServiceChange = useCallback((value: Option[]) => {
+    setCurrentServices(value)
+    console.log(`Services: ${JSON.stringify(value)}`)
+  }, [currentServices, setCurrentServices])
+
   useEffect(() => {
     quill?.on('text-change', () => {
       setContent(quill?.root.innerHTML)
@@ -158,6 +189,24 @@ export default function SuperAdminProjectCreateRoute() {
                 <div className="grid">
                   <label htmlFor="image">Image</label>
                   <input name="image" id="image" type="file" accept="image/*" />
+                </div>
+                <div className="grid gap-y-4">
+                  <label htmlFor="description">Industries</label>
+                  <Dropdown currentSelected={null} options={industryOptions} placeHolder={"Search..."} onChange={handleIndustryChange} />
+                  <input type="text" hidden name="industries" value={JSON.stringify(currentIndustries)} />
+                  {actionData?.errors.perks &&
+                    <p className="text-red-500">{actionData.errors.industries as string}</p>
+
+                  }
+                </div>
+                <div className="grid gap-y-4">
+                  <label htmlFor="description">Services</label>
+                  <Dropdown currentSelected={null} options={serviceOptions} placeHolder={"Search..."} onChange={handleServiceChange} />
+                  <input type="text" hidden name="services" value={JSON.stringify(currentServices)} />
+                  {actionData?.errors.perks &&
+                    <p className="text-red-500">{actionData.errors.services as string}</p>
+
+                  }
                 </div>
                 <div className="grid gap-y-4">
                   <label htmlFor="summary">Summary*</label>

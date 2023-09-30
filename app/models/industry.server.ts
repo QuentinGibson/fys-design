@@ -19,12 +19,8 @@ export async function getIndustryByID(id: string) {
 }
 
 export async function getIndustries() {
-  try {
-    const industries = await prisma.industry.findMany();
-    return { industries };
-  } catch (error: any) {
-    console.error("Error finding all industries" + error.message);
-  }
+  const industries = await prisma.industry.findMany();
+  return industries;
 }
 
 export async function updateIndustries(id: string, data: any) {

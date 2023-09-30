@@ -1,6 +1,7 @@
 import { prisma } from "~/db.server";
-import type { Service, Perk } from "@prisma/client";
+import type { Service, Perk, Prisma } from "@prisma/client";
 import { validateName } from "~/utils";
+import { PrismaClientValidationError } from "@prisma/client/runtime";
 
 type CustomPerk = Omit<Perk, "created_at"> & { created_at: string };
 
@@ -8,7 +9,7 @@ export type CustomService = Omit<Service, "created_at"> & {
   created_at: string;
   perks: CustomPerk[];
 };
-function isValidPerks(perks: string[]) {
+function isValidPerks(perks: Pick<Prisma.ServiceCreateInput, "perks">) {
   async function isIdValue(perk: string) {
     const res = prisma.perk.findUnique({ where: { id: perk } })
     return res !== null ? true : false
@@ -48,7 +49,7 @@ function isValidDescription(description: string, maxLength: number = 400): boole
 }
 
 
-export async function createService(data: any) {
+export async function createService(data: Prisma.ServiceCreateInput) {
   let errors: InputError = {}
 
   // Validate Input Data

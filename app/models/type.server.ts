@@ -18,13 +18,9 @@ export async function getTypeByID(id: string) {
   }
 }
 
-export async function getTypes(id: string) {
-  try {
-    const types = prisma.type.findMany();
-    return { types };
-  } catch (error: any) {
-    console.error("Error getting all types. Message: " + error.message);
-  }
+export async function getTypes() {
+  const types = prisma.type.findMany();
+  return types;
 }
 
 export async function updateTypeByID(id: string, data: any) {

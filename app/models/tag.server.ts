@@ -19,12 +19,8 @@ export async function getTagByID(id: string) {
 }
 
 export async function getTags() {
-  try {
-    const tags = prisma.tag.findMany();
-    return tags;
-  } catch (error: any) {
-    console.error("Error finding all tags. Message: " + error.message);
-  }
+  const tags = prisma.tag.findMany();
+  return tags;
 }
 
 export async function updateTagByID(id: string, data: any) {
