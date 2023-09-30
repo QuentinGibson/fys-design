@@ -136,14 +136,14 @@ export default function SuperAdminProjectSlugRoute() {
           <div className="flex gap-4">
             <Link className="p-3 bg-emerald-600" to={`/case-studies/${caseData?.slug}`}>View Page</Link>
             <Form
-              action={`/api/deleteCase/${caseData?.slug}`}
+              action={`/api/deleteCase/${caseData?.id}`}
               method="GET"
             >
               <button
                 className="p-3 bg-red-600"
                 type="submit"
               >
-                Delete Project
+                Delete Case
               </button>
             </Form>
           </div>

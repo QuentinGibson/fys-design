@@ -61,8 +61,8 @@ export default function SuperAdminRoute() {
           <div className="flex flex-col gap-3">
             <p className="font-body text-2xl underline underline-offset-4">Testimonies</p>
             <div className="flex flex-col gap-2">
-              <Link className="hover:underline" to="/superadmin/testimony/create">Create Testimonies</Link>
-              <Link className="hover:underline" to="/superadmin/testimony/">View Testimonies</Link>
+              <Link className="hover:underline" to="/superadmin/testimonial/create">Create Testimonies</Link>
+              <Link className="hover:underline" to="/superadmin/testimonial/">View Testimonies</Link>
             </div>
           </div>
           <div className="flex flex-col gap-3">

@@ -147,11 +147,13 @@ export async function updateCaseBySlug(inputSlug: string, data: any) {
   const caseData = await prisma.case.update({ where: { slug: inputSlug }, data });
   return [null, caseData]
 }
-export async function deleteCaseByID(id: string) {
-  try {
-    const oldCase = await prisma.case.delete({ where: { id } });
-    return { oldCase };
-  } catch (error: any) {
-    console.error("Error deleting case. Message: " + error.message);
-  }
+
+export async function deleteCaseById(id: string) {
+  const oldcase = await prisma.case.delete({ where: { id } });
+  return [null, oldcase];
+}
+
+export async function deleteCaseBySlug(slug: string) {
+  const oldcase = await prisma.case.delete({ where: { slug } });
+  return [null, oldcase];
 }

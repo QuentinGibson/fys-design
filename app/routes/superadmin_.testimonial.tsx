@@ -1,7 +1,8 @@
+
 import { LoaderArgs, json, redirect } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
-import { getCases } from "~/models/case.server";
-import { getSession, requireUser } from "~/session.server";
+import { getTestimonials } from "~/models/testimonial.server";
+import { requireUser, getSession } from "~/session.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const user = await requireUser(request)
@@ -15,29 +16,29 @@ export const loader = async ({ request, params }: LoaderArgs) => {
       }
     })
   }
-  const cases = await getCases()
-  return json({ cases })
+  const testimonials = await getTestimonials()
+  return json({ testimonials })
 };
 
 export function meta({ matches }: { matches: any }) {
   const rootMeta = matches[0].meta;
   const title = rootMeta.find((m: any) => m.title)
   return [
-    { title: title.title + " | Super Admin All Projects" }
+    { title: title.title + " | Super Admin All Services" }
   ]
 }
 
-export default function SuperAdminProjectRoute() {
-  const { cases } = useLoaderData<typeof loader>()
+export default function SuperAdminServiceRoute() {
+  const { testimonials } = useLoaderData<typeof loader>()
   return (
     <main>
       <div className="flex justify-center py-20">
-        <h1 className="font-body text-4xl">View Cases</h1>
+        <h1 className="font-body text-4xl">View Testimonials</h1>
       </div>
       <div className="flex flex-col gap-4 max-w-lg mx-auto items-center">
-        {cases.map((caseData, index) => {
+        {testimonials.map((testimonial, index) => {
           return (
-            <Link className="hover:underline" key={index} to={`/superadmin/case/${caseData.slug}`}>{caseData.slug}</Link>
+            <Link className="hover:underline" key={index} to={`/superadmin/testimonial/${testimonial.id}`}>{testimonial.name}</Link>
           )
         })}
       </div>
