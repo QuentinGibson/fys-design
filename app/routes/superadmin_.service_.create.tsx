@@ -51,14 +51,16 @@ export const action = async ({ request }: ActionArgs) => {
   }
   const name = formData.get("name") as string
   const description = formData.get("description") as string
-  const perksraw = formData.get("perks") as string
-  const perks = JSON.parse(perksraw)
+  const perksraw = JSON.parse(formData.get("perks") as string)
+  const perks = {
+    connect: perksraw.map((perk: any) => ({ id: perk.value }))
+  }
 
   const serializedData = {
     name,
     image: url,
     description,
-    perks: perks.map((perk: any) => perk.value)
+    perks
   }
 
   const [errors, service] = await createService(serializedData)
@@ -142,10 +144,10 @@ export default function SuperAdminProjectCreateRoute() {
                   <label htmlFor="description">Perks</label>
                   <Dropdown currentSelected={null} options={perkOptions} placeHolder={"Search..."} onChange={handlePerksChange} />
                   <input type="text" hidden name="perks" value={JSON.stringify(currentPerks)} />
-                  {actionData?.errors.perks &&
+                  {/* {actionData?.errors.perks &&
                     <p className="text-red-500">{actionData.errors.perks as string}</p>
 
-                  }
+                  } */}
                 </div>
                 <div className="grid gap-y-4">
                   <label htmlFor="description">Description</label>

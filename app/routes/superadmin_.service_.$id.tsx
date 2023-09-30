@@ -54,9 +54,10 @@ export const action = async ({ request, params }: ActionArgs) => {
   }
   const name = formData.get("name") as string
   const description = formData.get("description") as string
-  const perksraw = formData.get("perks") as any
-  console.log(perksraw)
-  const perks = JSON.parse(perksraw)
+  const perksraw = JSON.parse(formData.get("perks") as string)
+  const perks = {
+    set: perksraw.map((perk: any) => ({ id: perk.value }))
+  }
 
   const inputData = { name, description, image: url, perks }
   const [errors, service] = await updateService(inputId, inputData)
@@ -90,7 +91,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   const id = params.id
   invariant(id, "No id found!")
   const service = await getServiceByID(id)
-  invariant(service, "No project found!")
+  invariant(service, "No Service found!")
   const perks = await getPerks()
   return { service, perks }
 }
@@ -102,7 +103,7 @@ export default function SuperAdminProjectSlugRoute() {
   const navigation = useNavigation()
   const perkOptions = perks.map(perk => ({ label: perk.name, value: perk.id }))
   const startingPerks = service.perks.map(perk => ({ label: perk.name, value: perk.id }))
-  const [currentPerks, setCurrentPerks] = useState<Perk[]>(startingPerks || [])
+  const [currentPerks, setCurrentPerks] = useState<Option[]>(startingPerks || [])
 
   const handlePerksChange = useCallback((value: any) => {
     setCurrentPerks(value)
@@ -124,7 +125,7 @@ export default function SuperAdminProjectSlugRoute() {
             </Link>
             <Form
               action={`/api/deleteService/${service.id}`}
-              method="GET"
+              method="POST"
             >
               <button
                 className="p-3 bg-red-600"

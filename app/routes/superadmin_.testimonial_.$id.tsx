@@ -1,6 +1,6 @@
 
 import { ActionArgs, LoaderArgs, json, redirect } from "@remix-run/node";
-import { Form, Link, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, Link, useActionData, useLoaderData, useNavigation } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import draftCSS from "quill/dist/quill.snow.css"
 import editorStyles from "~/editor.css"
@@ -76,6 +76,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
 export default function SuperAdminProjectSlugRoute() {
   const { testimonial } = useLoaderData<typeof loader>()
   const actionData = useActionData<typeof action>()
+  const navigation = useNavigation()
 
   return (
     <main>
@@ -105,55 +106,58 @@ export default function SuperAdminProjectSlugRoute() {
             </Form>
           </div>
           <Form method="POST" encType="multipart/form-data">
-            <div className="flex flex-col gap-8 justify-center">
-              <div className="grid grid-cols-2">
-                <div className="flex flex-col gap-4">
-                  <label htmlFor="">
-                    <span className="text-lg">Name*</span>
-                    <br />
-                    <input
-                      name="name"
-                      type="text"
-                      className={clsx(
-                        "text-black",
-                        actionData?.errors.name &&
-                        "border-2 border-red-500"
-                      )}
-                      defaultValue={
-                        actionData?.values.name ||
-                        testimonial.name
-                      }
-                      required
-                    />
-                  </label>
-                  {
-                    actionData?.errors.name &&
-                    <p className="text-red-500">
-                      {actionData?.errors.name}
-                    </p>
-                  }
+            <fieldset disabled={navigation.state === "submitting"}>
+              <div className="flex flex-col gap-8 justify-center">
+                <div className="grid grid-cols-2">
+                  <div className="flex flex-col gap-4">
+                    <label htmlFor="">
+                      <span className="text-lg">Name*</span>
+                      <br />
+                      <input
+                        name="name"
+                        type="text"
+                        className={clsx(
+                          "text-black",
+                          actionData?.errors.name &&
+                          "border-2 border-red-500"
+                        )}
+                        defaultValue={
+                          actionData?.values.name ||
+                          testimonial.name
+                        }
+                        required
+                      />
+                    </label>
+                    {
+                      actionData?.errors.name &&
+                      <p className="text-red-500">
+                        {actionData?.errors.name}
+                      </p>
+                    }
+                  </div>
+                </div>
+                <div className="flex">
+                  <div className="grid grid-cols-1 w-full h-80">
+                    <textarea name="content" id="" defaultValue={testimonial.content} className="text-black"></textarea>
+                    {
+                      actionData?.errors.content &&
+                      <p className="text-red-500">
+                        {actionData?.errors.content}
+                      </p>
+                    }
+                  </div>
+                </div>
+                <div>
+                  <button
+                    className="bg-black py-3 px-4"
+                    type="submit"
+                  >
+                    {navigation.state === "submitting" ? "Saving Project" : "Save Project"}
+                  </button>
                 </div>
               </div>
-              <div className="flex">
-                <div className="grid grid-cols-1 w-full h-80">
-                  <textarea name="content" id="" defaultValue={testimonial.content} className="text-black"></textarea>
-                  {
-                    actionData?.errors.content &&
-                    <p className="text-red-500">
-                      {actionData?.errors.content}
-                    </p>
-                  }
-                </div>
-              </div>
-              <div>
-                <button
-                  className="bg-black py-3 px-4"
-                  type="submit"
-                >
-                  Save Project
-                </button>
-              </div>
-            </div>
+            </fieldset>
+
           </Form>
         </div>
       </div >

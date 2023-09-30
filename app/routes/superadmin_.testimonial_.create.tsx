@@ -69,58 +69,61 @@ export default function SuperAdminProjectCreateRoute() {
   return (
     <main>
       <div className="flex justify-center font-body text-4xl md:text-6xl py-20">
-        <h1>Create Project</h1>
+        <h1>Create Testimony</h1>
       </div>
       <div>
         <div className="max-w-xl mx-auto">
           <Form method="POST" encType="multipart/form-data">
-            <div className="flex flex-col gap-8 justify-center">
-              <div className="grid grid-cols-2">
-                <div className="flex flex-col gap-4">
-                  <label htmlFor="">
-                    <span className="text-lg">Name*</span>
-                    <br />
-                    <input
-                      name="name"
-                      type="text"
-                      className={clsx(
-                        "text-black",
-                        actionData?.errors.name &&
-                        "border-2 border-red-500"
-                      )}
-                      defaultValue={
-                        actionData?.values.name
-                      }
-                      required
-                    />
-                  </label>
+            <fieldset disabled={navigation.state === "submitting"}>
+              <div className="flex flex-col gap-8 justify-center">
+                <div className="grid grid-cols-2">
+                  <div className="flex flex-col gap-4">
+                    <label htmlFor="">
+                      <span className="text-lg">Name*</span>
+                      <br />
+                      <input
+                        name="name"
+                        type="text"
+                        className={clsx(
+                          "text-black",
+                          actionData?.errors.name &&
+                          "border-2 border-red-500"
+                        )}
+                        defaultValue={
+                          actionData?.values.name
+                        }
+                        required
+                      />
+                    </label>
+                    {
+                      actionData?.errors.name &&
+                      <p className="text-red-500">
+                        {actionData?.errors.name}
+                      </p>
+                    }
+                  </div>
+                </div>
+                <div className="flex flex-col w-full">
+                  <label htmlFor="content">Content*</label>
+                  <textarea name="content" id="content" className="text-black h-80"></textarea>
                   {
-                    actionData?.errors.name &&
+                    actionData?.errors.content &&
                     <p className="text-red-500">
-                      {actionData?.errors.name}
+                      {actionData?.errors.content}
                     </p>
                   }
                 </div>
+                <div>
+                  <button
+                    className="bg-black py-3 px-4"
+                    type="submit"
+                  >
+                    {navigation.state === "submitting" ? "Saving Project" : "Save Project"}
+                  </button>
+                </div>
               </div>
-              <div className="flex flex-col w-full">
-                <label htmlFor="content">Content*</label>
-                <textarea name="content" id="content" className="text-black h-80"></textarea>
-                {
-                  actionData?.errors.content &&
-                  <p className="text-red-500">
-                    {actionData?.errors.content}
-                  </p>
-                }
-              </div>
-              <div>
-                <button
-                  className="bg-black py-3 px-4"
-                  type="submit"
-                >
-                  Save Project
-                </button>
-              </div>
-            </div>
+            </fieldset>
+
           </Form>
         </div>
       </div >

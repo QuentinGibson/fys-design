@@ -1,15 +1,17 @@
-import { LoaderArgs, redirect } from "@remix-run/node";
+import { ActionArgs, LoaderArgs, redirect } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import { deleteService } from "~/models/service.server";
 import { getSession, requireUser, sessionStorage } from "~/session.server";
 
-export const loader = async ({ request, params }: LoaderArgs) => {
+export const action = async ({ request, params }: ActionArgs) => {
   await requireUser(request)
   const session = await getSession(request)
   const id = params.id
   invariant(id, "No ID found!")
 
-  const [errors, deletedService] = await deleteService(id)
+  const [errors, deletedService] = await deleteService(id).catch(error => {
+    throw error
+  })
 
   if (errors) {
     session.flash("message", "Failed to delete project!")
@@ -30,3 +32,7 @@ export const loader = async ({ request, params }: LoaderArgs) => {
     }
   })
 }
+
+export const loader = async ({ request, params }: LoaderArgs) => {
+  return redirect("/superadmin/service")
+};

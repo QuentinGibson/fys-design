@@ -61,8 +61,8 @@ export const action = async ({ request, params }: ActionArgs) => {
   const name = formData.get("name") as string
   const slug = formData.get("slug") as string
   const content = formData.get("content") as string
-  const tagsraw = formData.get("tags") as string
-  const tags = JSON.parse(tagsraw)
+  const tagsraw: Option[] = JSON.parse(formData.get("tags") as string)
+  const tags = { set: tagsraw.map(tag => ({ id: tag.value })) }
 
   const inputData = { name, slug, content, logo: logoUrl, image: imageUrl, tags }
 

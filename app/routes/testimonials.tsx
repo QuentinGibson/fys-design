@@ -4,7 +4,7 @@ import { getTestimonials } from "~/models/testimonial.server";
 
 export const loader = async ({ request, params }: LoaderArgs) => {
   const testimonials = await getTestimonials()
-  return json(testimonials)
+  return json({ testimonials })
 };
 export default function TestimonialRoute() {
   const { testimonials } = useLoaderData<typeof loader>()

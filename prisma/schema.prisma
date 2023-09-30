@@ -88,7 +88,7 @@ model Case {
 model Tag {
   id         String   @id @default(cuid())
   name       String   @unique
-  case       Case?    @relation(fields: [caseId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  case       Case[]
   caseId     String?
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
@@ -107,12 +107,11 @@ model Service {
 }
 
 model Perk {
-  id         String   @id @default(cuid())
-  name       String   @unique
-  service    Service? @relation(fields: [serviceId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-  serviceId  String?
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
+  id         String    @id @default(cuid())
+  name       String    @unique
+  service    Service[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
 }
 
 model ContactFormSubmission {

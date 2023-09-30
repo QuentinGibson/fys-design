@@ -70,12 +70,37 @@ function isValidTags(tags: { label: string, value: string }[]): boolean {
 }
 
 export async function createCase(data: any) {
-  try {
-    const newCase = await prisma.case.create(data);
-    return { newCase };
-  } catch (error: any) {
-    console.error("Error creating a new case. Message: " + error.message);
+  let errors: InputError = {}
+  const { name, slug, content, logo, image, tags } = data
+  if (!validateName(name)) {
+    errors.name = "Invalid Name. Please enter a different name!"
   }
+  if (!isValidSlug(slug)) {
+    errors.slug = "Invalid Slug. Please remove invalid characters!"
+  }
+  if (!isValidContent(content)) {
+    errors.content = "Invalid Content. Please try again!"
+  }
+
+  if (logo) {
+    if (!isValidImageFileName(logo)) {
+      errors.logo = "Error, Please enter a valid image file."
+
+    }
+  }
+  if (image) {
+    if (!isValidImageFileName(image)) {
+      errors.image = "Error, Please enter a valid image file."
+    }
+  }
+
+
+  if (Object.keys(errors).length > 0) {
+    return [errors, null]
+  }
+
+  const caseData = await prisma.case.create({ data: data });
+  return [null, caseData]
 }
 
 export async function getCaseByID(id: string) {
@@ -129,20 +154,10 @@ export async function updateCaseBySlug(inputSlug: string, data: any) {
       errors.image = "Error, Please enter a valid image file."
     }
   }
-  if (!isValidTags(tags)) {
-    errors.tag = "Error, Please enter tags"
-  }
 
 
   if (Object.keys(errors).length > 0) {
     return [errors, null]
-  }
-  data.tags = {
-    connect: data.tags.map((tag: { label: string, value: string }) => {
-      return {
-        id: tag.value
-      }
-    })
   }
   const caseData = await prisma.case.update({ where: { slug: inputSlug }, data });
   return [null, caseData]
