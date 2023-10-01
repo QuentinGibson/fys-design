@@ -6,8 +6,17 @@ import { getCases } from "~/models/case.server";
 export const loader = async ({ request, params }: LoaderArgs) => {
   const cases = await getCases();
   invariant(cases, "No cases found!")
-  return json(cases)
+  return json({ cases })
 };
+
+export function meta({ matches, data }: { matches: any, data: any }) {
+  const rootMeta = matches[0].meta;
+  const title = rootMeta.find((m: any) => m.title)
+  return [
+    { title: title.title + " | Case Study" }
+  ]
+}
+
 export default function CaseStudies() {
   const { cases } = useLoaderData<typeof loader>()
   return (

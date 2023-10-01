@@ -1,0 +1,14 @@
+#case-content ul {
+  list-style: disc;
+  margin: 0 30px;
+}
+
+#case-content h3 {
+  font-size: 32px;
+  font-family: 'Mazius Display';
+}
+
+#case-content h5 {
+  font-size: 18px;
+
+}
