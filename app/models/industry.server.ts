@@ -1,21 +1,23 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "~/db.server";
+import { validateName } from "~/utils";
 
-export async function createIndustry(data: any) {
-  try {
-    const industry = await prisma.industry.create(data);
-    return { industry };
-  } catch (error: any) {
-    console.error("Error creating Industry. Message: " + error.message);
+export async function createIndustry(data: Prisma.IndustryCreateInput) {
+  const errors: InputError = {}
+  const { name } = data
+  if (!validateName) {
+    errors.name = "Invalid name. Please try another name."
   }
+  if (Object.keys(errors).length > 0) {
+    return [errors, null]
+  }
+  const industry = await prisma.industry.create({ data });
+  return [null, industry]
 }
 
 export async function getIndustryByID(id: string) {
-  try {
-    const industry = await prisma.industry.findUnique({ where: { id } });
-    return { industry };
-  } catch (error: any) {
-    console.error("Error finding industry. Message: " + error.message);
-  }
+  const industry = await prisma.industry.findUnique({ where: { id } })
+  return industry;
 }
 
 export async function getIndustries() {
@@ -23,20 +25,20 @@ export async function getIndustries() {
   return industries;
 }
 
-export async function updateIndustries(id: string, data: any) {
-  try {
-    const industry = await prisma.industry.update({ where: { id }, data });
-    return { industry };
-  } catch (error: any) {
-    console.error("Error updating project. Message: " + error.message);
+export async function updateIndustryById(id: string, data: any) {
+  const errors: InputError = {}
+  const { name } = data
+  if (!validateName) {
+    errors.name = "Invalid name. Please try another name."
   }
+  if (Object.keys(errors).length > 0) {
+    return [errors, null]
+  }
+  const industry = await prisma.industry.update({ data, where: { id } });
+  return [null, industry]
 }
 
 export async function deleteIndustryByID(id: string) {
-  try {
-    const industry = await prisma.industry.delete({ where: { id } });
-    return { industry };
-  } catch (error: any) {
-    console.error("Error deleting industry. Message: " + error.message);
-  }
+  const industry = await prisma.industry.delete({ where: { id } });
+  return [null, industry];
 }
