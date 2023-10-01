@@ -33,7 +33,7 @@ export default function SuperAdminServiceRoute() {
   return (
     <main>
       <div className="flex justify-center py-20">
-        <h1 className="font-body text-4xl">View Testimonials</h1>
+        <h1 className="font-body text-4xl">View Tag</h1>
       </div>
       <div className="flex flex-col gap-4 max-w-lg mx-auto items-center">
         {tags.map((tag, index) => {

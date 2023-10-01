@@ -35,8 +35,8 @@ export default function SuperAdminRoute() {
           </Form>
         </div>
       </div>
-      <div className="max-w-4xl mx-auto">
-        <div className="grid gap-9 md:grid-flow-col">
+      <div className="max-w-4xl mx-auto py-10">
+        <div className="grid gap-12 md:grid-cols-3 justify-items-center">
           <div className="flex flex-col gap-3">
             <p className="font-body text-2xl underline underline-offset-4">Portfolio</p>
             <div className="flex flex-col gap-2">
@@ -70,6 +70,20 @@ export default function SuperAdminRoute() {
             <div className="flex flex-col gap-2">
               <Link className="hover:underline" to="/superadmin/tag/create">Create Tag</Link>
               <Link className="hover:underline" to="/superadmin/tag/">View Tags</Link>
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <p className="font-body text-2xl underline underline-offset-4">Industries</p>
+            <div className="flex flex-col gap-2">
+              <Link className="hover:underline" to="/superadmin/industry/create">Create Industry</Link>
+              <Link className="hover:underline" to="/superadmin/industry/">View Industries</Link>
+            </div>
+          </div>
+          <div className="flex flex-col gap-3">
+            <p className="font-body text-2xl underline underline-offset-4">Project Types</p>
+            <div className="flex flex-col gap-2">
+              <Link className="hover:underline" to="/superadmin/type/create">Create Types</Link>
+              <Link className="hover:underline" to="/superadmin/type/">View Types</Link>
             </div>
           </div>
         </div>

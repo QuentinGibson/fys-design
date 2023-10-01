@@ -1,21 +1,24 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "~/db.server";
+import { validateName } from "~/utils";
 
 export async function createTag(data: any) {
-  try {
-    const tag = await prisma.tag.create(data);
-    return { tag };
-  } catch (error: any) {
-    console.error("Error creating tag. Message: " + error.message);
+  const errors: InputError = {}
+  const { name } = data
+  if (!validateName(name)) {
+    errors.name = "Invalid Name. Please enter a different name!"
   }
+
+  if (Object.keys(errors).length > 0) {
+    return [errors, null]
+  }
+  const tag = await prisma.tag.create({ data: data });
+  return [null, tag];
 }
 
 export async function getTagByID(id: string) {
-  try {
-    const tag = await prisma.tag.findUnique({ where: { id } });
-    return { tag };
-  } catch (error: any) {
-    console.error("Error finding tag. Message: " + error.message);
-  }
+  const tag = await prisma.tag.findUnique({ where: { id } });
+  return tag;
 }
 
 export async function getTags() {
@@ -23,20 +26,22 @@ export async function getTags() {
   return tags;
 }
 
-export async function updateTagByID(id: string, data: any) {
-  try {
-    const tag = prisma.tag.update({ where: { id }, data });
-    return { tag };
-  } catch (error: any) {
-    console.error("Error updating tag. Message: " + error.message);
+export async function updateTagByID(id: string, data: Prisma.TagUpdateInput) {
+  const errors: InputError = {}
+  const { name } = data
+  if (!validateName(name)) {
+    errors.name = "Invalid Name. Please enter a different name!"
   }
+
+  if (Object.keys(errors).length > 0) {
+    return [errors, null]
+  }
+
+  const tag = await prisma.tag.update({ where: { id }, data });
+  return [null, tag]
 }
 
 export async function deleteTagByID(id: string) {
-  try {
-    const tag = prisma.tag.delete({ where: { id } });
-    return { tag };
-  } catch (error: any) {
-    console.error("Error deleting tag. Message: " + error.message);
-  }
+  const tag = await prisma.tag.delete({ where: { id } });
+  return [null, tag];
 }
